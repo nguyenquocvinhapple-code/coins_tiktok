@@ -57,24 +57,32 @@
       text-align: center;
     }
     .package:hover { background: #eee; }
-    .package.selected { border-color: red; background: #fff0f0; }
+    .package.selected {
+      border-color: #e60000;
+      background: #fff0f0;
+    }
+    .package.selected .coin { color: #e60000; }
+    .package.selected .price {
+      color: #e60000;
+      font-weight: bold;
+    }
 
     .coin {
-      font-size: 32px; /* gấp đôi */
+      font-size: 24px; /* nhỏ gọn hơn */
       font-weight: bold;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-variant-numeric: tabular-nums; /* dấu phẩy thẳng */
+      font-variant-numeric: tabular-nums;
       font-family: 'Inter', 'Roboto', sans-serif;
     }
     .coin img {
-      width: 48px; /* icon xu gấp đôi */
-      margin-right: 10px;
+      width: 32px; /* icon nhỏ lại */
+      margin-right: 4px;
     }
     .coin-amount {
-      min-width: 100px; /* đảm bảo thẳng hàng */
-      text-align: right;
+      text-align: left;
+      min-width: auto;
     }
 
     .price { font-size: 16px; color: #666; margin-top: 8px; }
@@ -89,16 +97,16 @@
       position: absolute;
       left: 10px; top: 50%;
       transform: translateY(-50%);
-      width: 24px; height: 24px;
+      width: 20px; height: 20px;
     }
     .custom-input input {
       width: 100%;
-      padding: 10px 10px 10px 42px;
-      font-size: 16px;
+      padding: 8px 8px 8px 36px;
+      font-size: 14px;
       border-radius: 6px;
       border: 1px solid #ccc;
     }
-    .custom-price { margin-top: 6px; font-size: 15px; font-weight: bold; color: #333; }
+    .custom-price { margin-top: 6px; font-size: 14px; font-weight: bold; color: #333; }
 
     .tiktok-id { margin-top: 25px; text-align: left; }
     .tiktok-id label { display: block; margin-bottom: 8px; font-weight: bold; }
