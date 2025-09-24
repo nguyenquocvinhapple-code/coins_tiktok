@@ -22,22 +22,15 @@
       position: relative;
     }
 
-    /* logo TikTok góc trái */
     .logo {
-      width: 100px;
-      max-width: 25%;
-      height: auto;
+      width: 90px;
       position: absolute;
       top: 20px;
       left: 20px;
     }
 
-    .container {
-      padding-top: 160px; /* chừa khoảng cho logo */
-    }
-
-    /* gạch ngang dưới logo */
     .divider {
+      margin-top: 110px;
       border-bottom: 1px solid #ddd;
       margin-bottom: 20px;
     }
@@ -57,7 +50,7 @@
       border: 2px solid transparent;
       border-radius: 10px;
       padding: 15px 20px;
-      width: 150px;
+      width: 160px;
       cursor: pointer;
       background: #f9f9f9;
       transition: 0.3s;
@@ -65,11 +58,27 @@
     }
     .package:hover { background: #eee; }
     .package.selected { border-color: red; background: #fff0f0; }
-    .package img { width: 24px; vertical-align: middle; margin-right: 5px; }
-    .coin { font-size: 18px; font-weight: bold; }
-    .price { font-size: 14px; color: #666; margin-top: 5px; }
 
-    /* custom input nằm trong package custom */
+    .coin {
+      font-size: 32px; /* gấp đôi */
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-variant-numeric: tabular-nums; /* dấu phẩy thẳng */
+      font-family: 'Inter', 'Roboto', sans-serif;
+    }
+    .coin img {
+      width: 48px; /* icon xu gấp đôi */
+      margin-right: 10px;
+    }
+    .coin-amount {
+      min-width: 100px; /* đảm bảo thẳng hàng */
+      text-align: right;
+    }
+
+    .price { font-size: 16px; color: #666; margin-top: 8px; }
+
     .custom-input {
       display: none;
       margin-top: 10px;
@@ -78,25 +87,18 @@
     }
     .custom-input img {
       position: absolute;
-      left: 10px;
-      top: 50%;
+      left: 10px; top: 50%;
       transform: translateY(-50%);
-      width: 20px;
-      height: 20px;
+      width: 24px; height: 24px;
     }
     .custom-input input {
       width: 100%;
-      padding: 8px 8px 8px 36px;
-      font-size: 14px;
+      padding: 10px 10px 10px 42px;
+      font-size: 16px;
       border-radius: 6px;
       border: 1px solid #ccc;
     }
-    .custom-price {
-      margin-top: 6px;
-      font-size: 14px;
-      font-weight: bold;
-      color: #333;
-    }
+    .custom-price { margin-top: 6px; font-size: 15px; font-weight: bold; color: #333; }
 
     .tiktok-id { margin-top: 25px; text-align: left; }
     .tiktok-id label { display: block; margin-bottom: 8px; font-weight: bold; }
@@ -105,7 +107,6 @@
       border-radius: 6px; border: 1px solid #ccc;
     }
 
-    /* logo thanh toán trên nút Pay Now */
     .payment-logos {
       display: flex;
       justify-content: flex-start;
@@ -113,7 +114,7 @@
       margin: 15px 0;
       margin-left: 20px;
     }
-    .payment-logos img { height: 45px; object-fit: contain; }
+    .payment-logos img { height: 40px; object-fit: contain; }
 
     .btn {
       margin-top: 10px;
@@ -150,47 +151,61 @@
       height: 40px;
       animation: spin 1s linear infinite;
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     .success-message { display: none; margin-top: 20px; color: green; font-weight: bold; }
 
-    /* responsive */
-    @media (max-width: 480px) {
-      .logo {
-        width: 70px;
-        max-width: 30%;
-      }
-      .container {
-        padding-top: 120px;
-      }
+    /* Popup modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+    }
+    .modal-content h2 { margin-top: 0; }
+    .modal-content button {
+      margin: 10px 5px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .modal-content button:first-of-type {
+      background: #e60000; color: #fff;
+    }
+    .modal-content button:last-of-type {
+      background: #ccc;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- logo góc trái -->
     <img class="logo" src="https://inuvdp.com/wp-content/uploads/2022/08/tiktok-02.jpg" alt="TikTok Logo">
     <div class="divider"></div>
-
     <h1>Get Coins</h1>
 
     <!-- Packages -->
     <div class="package-list">
-      <div class="package" data-coins="70" data-price="0.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">70</div><div class="price">$0.99</div></div>
-      <div class="package" data-coins="350" data-price="4.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">350</div><div class="price">$4.99</div></div>
-      <div class="package" data-coins="700" data-price="6.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">700</div><div class="price">$6.99</div></div>
-      <div class="package" data-coins="1400" data-price="19.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">1,400</div><div class="price">$19.99</div></div>
-      <div class="package" data-coins="3500" data-price="49.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">3,500</div><div class="price">$49.99</div></div>
-      <div class="package" data-coins="7000" data-price="99.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">7,000</div><div class="price">$99.99</div></div>
-      <div class="package" data-coins="17500" data-price="249.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">17,500</div><div class="price">$249.99</div></div>
-
-      <!-- Custom -->
+      <div class="package" data-coins="70" data-price="0.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span class="coin-amount">70</span></div><div class="price">$0.99</div></div>
+      <div class="package" data-coins="350" data-price="4.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span class="coin-amount">350</span></div><div class="price">$4.99</div></div>
+      <div class="package" data-coins="700" data-price="6.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span class="coin-amount">700</span></div><div class="price">$6.99</div></div>
+      <div class="package" data-coins="1400" data-price="19.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span class="coin-amount">1,400</span></div><div class="price">$19.99</div></div>
+      <div class="package" data-coins="3500" data-price="49.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span class="coin-amount">3,500</span></div><div class="price">$49.99</div></div>
+      <div class="package" data-coins="7000" data-price="99.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span class="coin-amount">7,000</span></div><div class="price">$99.99</div></div>
+      <div class="package" data-coins="17500" data-price="249.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span class="coin-amount">17,500</span></div><div class="price">$249.99</div></div>
       <div class="package" data-coins="custom" data-price="0">
-        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">Custom</div>
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span class="coin-amount">Custom</span></div>
         <div class="price">Enter your amount</div>
         <div class="custom-input" id="customInput">
           <img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">
@@ -206,15 +221,15 @@
       <input type="text" placeholder="e.g. @username" id="tiktokId">
     </div>
 
-    <!-- Payment logos trên nút Pay Now -->
+    <!-- Payment logos -->
     <div class="payment-logos">
       <img src="https://download.logo.wine/logo/Visa_Inc./Visa_Inc.-Logo.wine.png" alt="Visa">
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/PayPal_Logo_Icon_2014.svg/1664px-PayPal_Logo_Icon_2014.svg.png" alt="PayPal">
       <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
     </div>
 
-    <!-- Payment button -->
-    <button class="btn" id="payBtn" onclick="handlePayment()">
+    <!-- Pay button -->
+    <button class="btn" id="payBtn" onclick="openConfirm()">
       Pay Now
       <span class="total-label" id="totalLabel" style="display:none;">Total</span>
     </button>
@@ -224,9 +239,20 @@
     <div class="success-message" id="successMessage">Payment successful!</div>
   </div>
 
+  <!-- Popup confirm -->
+  <div id="confirmModal" class="modal">
+    <div class="modal-content">
+      <h2>Confirm Payment</h2>
+      <p>Card: **** 578</p>
+      <p id="confirmCoins">Coins: -</p>
+      <p id="confirmAmount">Amount: -</p>
+      <button onclick="confirmPayment()">Confirm Payment</button>
+      <button onclick="closeConfirm()">Cancel</button>
+    </div>
+  </div>
+
   <script>
     const packages = document.querySelectorAll('.package');
-    const customInput = document.getElementById('customInput');
     const customCoinsInput = document.getElementById('customCoins');
     const customPriceEl = document.getElementById('customPrice');
     const payBtn = document.getElementById('payBtn');
@@ -240,14 +266,11 @@
         pkg.classList.add('selected');
         selectedPackage = pkg.dataset;
 
-        if (selectedPackage.coins === "custom") {
-          customInput.style.display = "block";
-        } else {
-          customInput.style.display = "none";
-        }
-
         if (selectedPackage.coins !== "custom") {
+          document.getElementById('customInput').style.display = "none";
           updateButtonPrice(selectedPackage.price);
+        } else {
+          document.getElementById('customInput').style.display = "block";
         }
       });
     });
@@ -268,26 +291,38 @@
     function updateButtonPrice(price) {
       payBtn.innerHTML = `Pay Now – $${price} <span class="total-label">Total</span>`;
     }
-
     function resetButton() {
       payBtn.innerHTML = `Pay Now <span class="total-label" style="display:none;">Total</span>`;
     }
 
-    function handlePayment() {
-      const spinner = document.getElementById('spinner');
-      const success = document.getElementById('successMessage');
-      const button = document.querySelector('.btn');
-      const tiktokId = document.getElementById('tiktokId').value;
-
+    function openConfirm() {
       if (!selectedPackage) {
         alert("Please select a coin package.");
         return;
       }
-
+      const tiktokId = document.getElementById('tiktokId').value;
       if (!tiktokId) {
         alert("Please enter your TikTok ID.");
         return;
       }
+
+      const coinsText = selectedPackage.coins === "custom" 
+          ? document.getElementById('customCoins').value 
+          : selectedPackage.coins;
+
+      document.getElementById('confirmCoins').textContent = "Coins: " + coinsText;
+      document.getElementById('confirmAmount').textContent = "Amount: $" + selectedPackage.price;
+      document.getElementById('confirmModal').style.display = "block";
+    }
+    function closeConfirm() {
+      document.getElementById('confirmModal').style.display = "none";
+    }
+
+    function confirmPayment() {
+      closeConfirm();
+      const spinner = document.getElementById('spinner');
+      const success = document.getElementById('successMessage');
+      const button = document.querySelector('.btn');
 
       spinner.style.display = 'block';
       success.style.display = 'none';
@@ -300,6 +335,5 @@
       }, 2000);
     }
   </script>
-
 </body>
 </html>
