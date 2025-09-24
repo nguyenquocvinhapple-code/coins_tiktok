@@ -23,7 +23,7 @@
     }
 
     .logo {
-      width: 180px;  /* gấp đôi logo TikTok */
+      width: 180px;
       position: absolute;
       top: 20px;
       left: 20px;
@@ -144,33 +144,40 @@
       cursor: pointer;
       width: 100%;
       position: relative;
+      overflow: hidden;
     }
     .btn:disabled { background: #aaa; cursor: not-allowed; }
 
-    .btn .total-label {
+    .btn-text, .spinner-mini, .success-icon {
       position: absolute;
-      top: -14px;
-      right: 10px;
-      font-size: 12px;
-      color: #fff;
-      background: #000;
-      padding: 2px 6px;
-      border-radius: 8px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
     }
 
-    .spinner {
+    .spinner-mini {
       display: none;
-      margin: 20px auto;
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #e60000;
+      border: 3px solid #fff;
+      border-top: 3px solid transparent;
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      width: 22px;
+      height: 22px;
       animation: spin 1s linear infinite;
     }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    .success-message { display: none; margin-top: 20px; color: green; font-weight: bold; }
+    .success-icon {
+      display: none;
+      font-size: 20px;
+      animation: popIn 0.3s ease forwards;
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    @keyframes popIn {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
 
     /* Popup modal */
     .modal {
@@ -248,13 +255,10 @@
 
     <!-- Pay button -->
     <button class="btn" id="payBtn" onclick="openConfirm()">
-      Pay Now
-      <span class="total-label" id="totalLabel" style="display:none;">Total</span>
+      <span class="btn-text">Pay Now</span>
+      <div class="spinner-mini"></div>
+      <div class="success-icon">✅ Success</div>
     </button>
-
-    <!-- Spinner + success -->
-    <div class="spinner" id="spinner"></div>
-    <div class="success-message" id="successMessage">Payment successful!</div>
   </div>
 
   <!-- Popup confirm -->
@@ -286,7 +290,6 @@
 
         if (selectedPackage.coins !== "custom") {
           document.getElementById('customInput').style.display = "none";
-          updateButtonPrice(selectedPackage.price);
         } else {
           document.getElementById('customInput').style.display = "block";
         }
@@ -299,19 +302,10 @@
         const price = (coins * coinRate).toFixed(2);
         customPriceEl.textContent = `≈ $${price}`;
         selectedPackage.price = price;
-        updateButtonPrice(price);
       } else {
         customPriceEl.textContent = "";
-        resetButton();
       }
     });
-
-    function updateButtonPrice(price) {
-      payBtn.innerHTML = `Pay Now – $${price} <span class="total-label">Total</span>`;
-    }
-    function resetButton() {
-      payBtn.innerHTML = `Pay Now <span class="total-label" style="display:none;">Total</span>`;
-    }
 
     function openConfirm() {
       if (!selectedPackage) {
@@ -338,19 +332,26 @@
 
     function confirmPayment() {
       closeConfirm();
-      const spinner = document.getElementById('spinner');
-      const success = document.getElementById('successMessage');
-      const button = document.querySelector('.btn');
 
-      spinner.style.display = 'block';
-      success.style.display = 'none';
-      button.disabled = true;
+      const btn = document.getElementById("payBtn");
+      const text = btn.querySelector(".btn-text");
+      const spinner = btn.querySelector(".spinner-mini");
+      const success = btn.querySelector(".success-icon");
+
+      // Show loading
+      text.style.display = "none";
+      spinner.style.display = "block";
+      success.style.display = "none";
 
       setTimeout(() => {
-        spinner.style.display = 'none';
-        success.style.display = 'block';
-        button.disabled = false;
+        spinner.style.display = "none";
+        success.style.display = "block";
       }, 2000);
+
+      setTimeout(() => {
+        text.style.display = "inline";
+        success.style.display = "none";
+      }, 5000);
     }
   </script>
 </body>
