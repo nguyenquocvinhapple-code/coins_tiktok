@@ -77,11 +77,21 @@
     .custom-input {
       display: none;
       margin-top: 15px;
+      position: relative;
+    }
+
+    .custom-input img {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
     }
 
     .custom-input input {
       width: 100%;
-      padding: 10px;
+      padding: 10px 10px 10px 42px; /* chừa khoảng trống cho icon */
       font-size: 16px;
       border-radius: 6px;
       border: 1px solid #ccc;
@@ -166,33 +176,33 @@
 
     <!-- Packages -->
     <div class="package-list">
-      <div class="package" data-coins="30" data-price="0.99">
-        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">30</div>
+      <div class="package" data-coins="70" data-price="0.99">
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">70</div>
         <div class="price">$0.99</div>
       </div>
-      <div class="package" data-coins="350" data-price="5.99">
+      <div class="package" data-coins="350" data-price="4.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">350</div>
-        <div class="price">$5.99</div>
+        <div class="price">$4.99</div>
       </div>
-      <div class="package" data-coins="700" data-price="11.99">
+      <div class="package" data-coins="700" data-price="6.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">700</div>
-        <div class="price">$11.99</div>
+        <div class="price">$6.99</div>
       </div>
-      <div class="package" data-coins="1400" data-price="23.99">
+      <div class="package" data-coins="1400" data-price="19.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">1,400</div>
-        <div class="price">$23.99</div>
+        <div class="price">$19.99</div>
       </div>
-      <div class="package" data-coins="3500" data-price="59.99">
+      <div class="package" data-coins="3500" data-price="49.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">3,500</div>
-        <div class="price">$59.99</div>
+        <div class="price">$49.99</div>
       </div>
-      <div class="package" data-coins="7000" data-price="119.99">
+      <div class="package" data-coins="7000" data-price="99.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">7,000</div>
-        <div class="price">$119.99</div>
+        <div class="price">$99.99</div>
       </div>
-      <div class="package" data-coins="17500" data-price="299.99">
+      <div class="package" data-coins="17500" data-price="249.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">17,500</div>
-        <div class="price">$299.99</div>
+        <div class="price">$249.99</div>
       </div>
       <div class="package" data-coins="custom" data-price="0">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">Custom</div>
@@ -202,6 +212,7 @@
 
     <!-- Custom coins -->
     <div class="custom-input" id="customInput">
+      <img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png" alt="Coin Icon">
       <input type="number" placeholder="Enter custom coin amount" id="customCoins">
     </div>
 
