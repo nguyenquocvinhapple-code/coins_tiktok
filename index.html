@@ -1,8 +1,8 @@
 ﻿<!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Coins TikTok</title>
+  <title>TikTok Coins</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -89,6 +89,13 @@
 
     .tiktok-id {
       margin-top: 25px;
+      text-align: left;
+    }
+
+    .tiktok-id label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
     }
 
     .tiktok-id input {
@@ -139,56 +146,56 @@
 
   <div class="container">
     <img class="logo" src="https://static.vecteezy.com/system/resources/thumbnails/018/930/463/small/tiktok-logo-tikok-icon-transparent-tikok-app-logo-free-png.png" alt="TikTok Logo">
-    <h1>Coins TikTok</h1>
+    <h1>Buy TikTok Coins</h1>
 
     <div class="package-list">
-      <!-- Gói xu -->
-      <div class="package" data-coins="30" data-price="9800">
+      <div class="package" data-coins="30" data-price="0.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">30</div>
-        <div class="price">đ9,800</div>
+        <div class="price">$0.99</div>
       </div>
-      <div class="package" data-coins="350" data-price="113900">
+      <div class="package" data-coins="350" data-price="5.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">350</div>
-        <div class="price">đ113,900</div>
+        <div class="price">$5.99</div>
       </div>
-      <div class="package" data-coins="700" data-price="227700">
+      <div class="package" data-coins="700" data-price="11.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">700</div>
-        <div class="price">đ227,700</div>
+        <div class="price">$11.99</div>
       </div>
-      <div class="package" data-coins="1400" data-price="455300">
+      <div class="package" data-coins="1400" data-price="23.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">1,400</div>
-        <div class="price">đ455,300</div>
+        <div class="price">$23.99</div>
       </div>
-      <div class="package" data-coins="3500" data-price="1138100">
+      <div class="package" data-coins="3500" data-price="59.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">3,500</div>
-        <div class="price">đ1,138,100</div>
+        <div class="price">$59.99</div>
       </div>
-      <div class="package" data-coins="7000" data-price="2276200">
+      <div class="package" data-coins="7000" data-price="119.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">7,000</div>
-        <div class="price">đ2,276,200</div>
+        <div class="price">$119.99</div>
       </div>
-      <div class="package" data-coins="17500" data-price="5690400">
+      <div class="package" data-coins="17500" data-price="299.99">
         <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">17,500</div>
-        <div class="price">đ5,690,400</div>
+        <div class="price">$299.99</div>
       </div>
       <div class="package" data-coins="custom" data-price="0">
-        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">Tùy chỉnh</div>
-        <div class="price">Hỗ trợ số lượng lớn</div>
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">Custom</div>
+        <div class="price">Large orders supported</div>
       </div>
     </div>
 
     <div class="custom-input" id="customInput">
-      <input type="number" placeholder="Nhập số lượng xu tùy chỉnh" id="customCoins">
+      <input type="number" placeholder="Enter custom coin amount" id="customCoins">
     </div>
 
     <div class="tiktok-id">
-      <input type="text" placeholder="Nhập ID TikTok" id="tiktokId">
+      <label for="tiktokId">Enter your TikTok ID:</label>
+      <input type="text" placeholder="e.g. @username" id="tiktokId">
     </div>
 
-    <button class="btn" onclick="handlePayment()">Thanh Toán</button>
+    <button class="btn" onclick="handlePayment()">Pay Now</button>
 
     <div class="spinner" id="spinner"></div>
-    <div class="success-message" id="successMessage">Thanh toán thành công!</div>
+    <div class="success-message" id="successMessage">Payment successful!</div>
   </div>
 
   <script>
@@ -217,12 +224,12 @@
       const tiktokId = document.getElementById('tiktokId').value;
 
       if (!selectedPackage) {
-        alert("Vui lòng chọn gói xu.");
+        alert("Please select a coin package.");
         return;
       }
 
       if (!tiktokId) {
-        alert("Vui lòng nhập ID TikTok.");
+        alert("Please enter your TikTok ID.");
         return;
       }
 
