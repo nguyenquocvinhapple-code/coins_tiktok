@@ -122,7 +122,16 @@
       margin: 15px 0;
       margin-left: 20px;
     }
-    .payment-logos img { height: 40px; object-fit: contain; }
+    .payment-logos img {
+      height: 40px;
+      object-fit: contain;
+      transition: 0.3s ease;
+      cursor: pointer;
+    }
+    .payment-logos img:hover {
+      transform: scale(1.1);
+      filter: brightness(1.2);
+    }
 
     .btn {
       margin-top: 10px;
