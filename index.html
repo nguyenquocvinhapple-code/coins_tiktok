@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Coins TikTok</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      width: 80px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .package-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .package {
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 15px 20px;
+      width: 120px;
+      cursor: pointer;
+      background: #f9f9f9;
+      transition: 0.3s;
+    }
+
+    .package:hover {
+      background: #eee;
+    }
+
+    .package.selected {
+      border-color: red;
+      background: #fff0f0;
+    }
+
+    .package img {
+      width: 24px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+
+    .coin {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .price {
+      font-size: 14px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .custom-input {
+      display: none;
+      margin-top: 15px;
+    }
+
+    .custom-input input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .tiktok-id {
+      margin-top: 25px;
+    }
+
+    .tiktok-id input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .btn {
+      margin-top: 25px;
+      background-color: #e60000;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .spinner {
+      display: none;
+      margin: 20px auto;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #e60000;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    .success-message {
+      display: none;
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img class="logo" src="https://static.vecteezy.com/system/resources/thumbnails/018/930/463/small/tiktok-logo-tikok-icon-transparent-tikok-app-logo-free-png.png" alt="TikTok Logo">
+    <h1>Coins TikTok</h1>
+
+    <div class="package-list">
+      <!-- Gói xu -->
+      <div class="package" data-coins="30" data-price="9800">
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">30</div>
+        <div class="price">đ9,800</div>
+      </div>
+      <div class="package" data-coins="350" data-price="113900">
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">350</div>
+        <div class="price">đ113,900</div>
+      </div>
+      <div class="package" data-coins="700" data-price="227700">
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">700</div>
+        <div class="price">đ227,700</div>
+      </div>
+      <div class="package" data-coins="1400" data-price="455300">
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">1,400</div>
+        <div class="price">đ455,300</div>
+      </div>
+      <div class="package" data-coins="3500" data-price="1138100">
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">3,500</div>
+        <div class="price">đ1,138,100</div>
+      </div>
+      <div class="package" data-coins="7000" data-price="2276200">
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">7,000</div>
+        <div class="price">đ2,276,200</div>
+      </div>
+      <div class="package" data-coins="17500" data-price="5690400">
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">17,500</div>
+        <div class="price">đ5,690,400</div>
+      </div>
+      <div class="package" data-coins="custom" data-price="0">
+        <div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png">Tùy chỉnh</div>
+        <div class="price">Hỗ trợ số lượng lớn</div>
+      </div>
+    </div>
+
+    <div class="custom-input" id="customInput">
+      <input type="number" placeholder="Nhập số lượng xu tùy chỉnh" id="customCoins">
+    </div>
+
+    <div class="tiktok-id">
+      <input type="text" placeholder="Nhập ID TikTok" id="tiktokId">
+    </div>
+
+    <button class="btn" onclick="handlePayment()">Thanh Toán</button>
+
+    <div class="spinner" id="spinner"></div>
+    <div class="success-message" id="successMessage">Thanh toán thành công!</div>
+  </div>
+
+  <script>
+    const packages = document.querySelectorAll('.package');
+    const customInput = document.getElementById('customInput');
+    let selectedPackage = null;
+
+    packages.forEach(pkg => {
+      pkg.addEventListener('click', () => {
+        packages.forEach(p => p.classList.remove('selected'));
+        pkg.classList.add('selected');
+        selectedPackage = pkg.dataset;
+
+        if (selectedPackage.coins === "custom") {
+          customInput.style.display = "block";
+        } else {
+          customInput.style.display = "none";
+        }
+      });
+    });
+
+    function handlePayment() {
+      const spinner = document.getElementById('spinner');
+      const success = document.getElementById('successMessage');
+      const button = document.querySelector('.btn');
+      const tiktokId = document.getElementById('tiktokId').value;
+
+      if (!selectedPackage) {
+        alert("Vui lòng chọn gói xu.");
+        return;
+      }
+
+      if (!tiktokId) {
+        alert("Vui lòng nhập ID TikTok.");
+        return;
+      }
+
+      spinner.style.display = 'block';
+      success.style.display = 'none';
+      button.disabled = true;
+
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        success.style.display = 'block';
+        button.disabled = false;
+      }, 2000);
+    }
+  </script>
+
+</body>
+</html>
