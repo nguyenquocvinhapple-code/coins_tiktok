@@ -1,81 +1,103 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nạp Xu</title>
+  <title>Buy Coins</title>
   <style>
-    :root{
-      --blue:#1a73e8;
-      --red:#e60000;
-    }
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px;text-align:center}
+    :root{ --tk-red:#FE2C55; --tk-cyan:#25F4EE; --tk-gray:#F2F3F5; --tk-gray-text:#6B6F76; --text:#0f0f0f; }
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px;text-align:center;color:var(--text)}
     .container{max-width:520px;margin:20px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 20px rgba(0,0,0,.08);position:relative}
     .logo{width:100px;position:absolute;left:10px;top:10px}
     .divider{margin-top:70px;border-bottom:1px solid #ddd;margin-bottom:12px}
-    h1{margin:8px 0 16px;font-size:20px;color:#222}
+    h1{margin:8px 0 16px;font-size:20px}
 
-    /* Gói xu nhỏ gọn */
+    /* Coin packages TikTok style */
     .package-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px}
-    .package{padding:12px;border-radius:16px;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.08);cursor:pointer}
-    .package.selected{outline:2px solid var(--blue)}
-    .coin{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;font-size:18px;color:var(--blue)}
+    .package{border:1px solid transparent;border-radius:18px;background:var(--tk-gray);box-shadow:none;padding:14px 16px;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .08s}
+    .package:active{transform:scale(.99)}
+    .coin{display:flex;align-items:center;justify-content:center;gap:6px;font-size:20px;font-weight:800;color:var(--text)}
     .coin img{width:20px}
-    .price{margin-top:6px;font-size:12px;color:#666}
-    @media (max-width:390px){
-      .package-list{grid-template-columns:repeat(3,1fr)}
-      .package{padding:10px}
-      .coin{font-size:17px}
-      .coin img{width:18px}
-      .price{font-size:11.5px}
-    }
+    .price{margin-top:6px;font-size:14px;color:var(--tk-gray-text)}
+    .package.selected{border-color:var(--tk-red);background:#FFF1F4;box-shadow:inset 0 0 0 2px rgba(254,44,85,.06)}
+    @media (max-width:390px){.package{padding:12px;border-radius:16px}.coin{font-size:18px}.price{font-size:13px}}
 
-    .tiktok-id{margin-top:16px;text-align:left}
-    .tiktok-id label{display:block;margin-bottom:6px;font-weight:600}
-    .tiktok-id input{width:100%;padding:10px;font-size:14px;border:1px solid #ccc;border-radius:8px}
+    .field{margin-top:16px;text-align:left}
+    .field label{display:block;margin-bottom:6px;font-weight:600}
+    .field input{width:100%;padding:10px;font-size:14px;border:1px solid #ccc;border-radius:8px}
+    .field input[readonly]{background:#fafafa;cursor:pointer}
 
-    .btn{margin-top:14px;width:100%;background:var(--red);color:#fff;border:0;border-radius:10px;padding:12px;font-size:16px;font-weight:700;cursor:pointer}
+    /* Payment logos row (outside) */
+    .payment-logos{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:14px 0}
+    .payment-logos img{height:28px;object-fit:contain;transition:transform .15s}
+    .payment-logos img:active{transform:scale(.95)}
 
-    /* Modal phương thức thanh toán */
+    .btn{margin-top:6px;width:100%;background:var(--tk-red);color:#fff;border:0;border-radius:10px;padding:12px;font-size:16px;font-weight:700;cursor:pointer}
+
+    /* Modal */
     .pm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100}
-    .pm-wrap{background:#fff;border-radius:16px;max-width:480px;margin:60px auto;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+    .pm-wrap{background:#fff;border-radius:16px;max-width:520px;margin:60px auto;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
     .pm-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #eee}
     .pm-title{font-size:20px;font-weight:700}
     .pm-close{background:transparent;border:0;font-size:22px;cursor:pointer}
     .pm-list{margin:16px 0;display:flex;flex-direction:column;gap:10px}
     .pm-item{display:flex;justify-content:space-between;align-items:center;border:1px solid #ddd;border-radius:12px;padding:12px;cursor:pointer;background:#fff}
-    .pm-item.active{border-color:#1a73e8;box-shadow:0 0 0 2px rgba(26,115,232,.2)}
+    .pm-item.active{border-color:var(--tk-red);box-shadow:0 0 0 2px rgba(254,44,85,.18)}
     .pm-left{display:flex;align-items:center;gap:10px}
     .pm-radio{width:18px;height:18px;border-radius:50%;border:2px solid #bbb;position:relative}
-    .pm-item.active .pm-radio{border-color:#1a73e8}
-    .pm-item.active .pm-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#1a73e8}
+    .pm-item.active .pm-radio{border-color:var(--tk-red)}
+    .pm-item.active .pm-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--tk-red)}
     .pm-name{font-weight:600}
+    .pm-right{display:flex;gap:8px;align-items:center}
     .pm-right img{height:22px}
     .pm-card{display:none;margin-top:12px;border:1px dashed #ccc;border-radius:10px;padding:12px;background:#fafafa}
-    .pm-card .vcard{background:#1a73e8;color:#fff;border-radius:12px;padding:14px;display:flex;justify-content:space-between}
-    .pm-card .vnum{letter-spacing:2px;font-weight:700}
+    .pm-card .vcard{background:linear-gradient(135deg,var(--tk-red),var(--tk-cyan));color:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;font-weight:700}
     .pm-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
     .pm-total{font-weight:700}
-    .pm-pay{background:#ff7da6;color:#fff;border:0;border-radius:999px;padding:12px 20px;font-weight:700;cursor:pointer}
+    .pm-pay{background:var(--tk-red);color:#fff;border:0;border-radius:999px;padding:12px 20px;font-weight:700;cursor:pointer}
 
-    /* Popup hoàn tất */
+    /* Success popup */
     .final-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200}
     .final-card{background:#fff;border-radius:16px;padding:22px;margin:34% auto 0;width:300px;text-align:center}
     .check{width:64px;height:64px;border-radius:50%;background:#2ecc71;margin:0 auto 12px;position:relative}
     .check::after{content:"";position:absolute;left:20px;top:16px;width:22px;height:12px;border:4px solid #fff;border-top:none;border-right:none;transform:rotate(-45deg)}
+
+    /* Spinner */
+    .spinner{width:36px;height:36px;border:4px solid #f3f3f3;border-top:4px solid var(--tk-red);border-radius:50%;margin:20px auto;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Quantity sheet */
+    .qty-sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200}
+    .qty-panel{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top-left-radius:16px;border-top-right-radius:16px;padding:14px 16px 18px;box-shadow:0 -8px 30px rgba(0,0,0,.15)}
+    .qty-handle{width:44px;height:5px;background:#ddd;border-radius:999px;margin:0 auto 10px}
+    .qty-title{font-weight:700;margin:0 0 10px 0;text-align:center}
+    .qty-range{display:flex;align-items:center;gap:6px;color:#999;font-size:13px;margin-bottom:8px}
+    .qty-range img{width:18px}
+    .qty-display{width:100%;border:1px solid #ececec;border-radius:10px;padding:12px;text-align:left;font-weight:700;font-size:16px;color:#333;background:#fff}
+    .qty-keypad{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .qty-key{padding:14px 0;background:#f3f3f5;border-radius:10px;font-weight:700;font-size:18px;box-shadow:inset 0 -1px 0 #ececec;user-select:none;text-align:center}
+    .qty-key:active{transform:scale(.98);background:#e8e8ec}
+    .qty-key.gray{background:#ececec}
+    .qty-row{margin-top:10px;display:flex;justify-content:space-between;align-items:center}
+    .qty-note{color:#e91e63;font-weight:600;font-size:14px}
+    .qty-total{font-weight:700}
+    .qty-paybar{display:flex;gap:10px;margin-top:8px}
+    .qty-paybtn{flex:1;background:var(--tk-red);color:#fff;border:0;border-radius:999px;padding:12px 10px;font-weight:700;text-align:center}
   </style>
 </head>
 <body>
   <div class="container">
     <img class="logo" src="https://inuvdp.com/wp-content/uploads/2022/08/tiktok-02.jpg" alt="TikTok"/>
     <div class="divider"></div>
-    <h1>Nạp Xu</h1>
+    <h1>Buy Coins</h1>
 
-    <!-- Danh sách gói đầy đủ -->
+    <!-- Packages (USD) -->
     <div class="package-list" id="pkgList">
+      <div class="package" data-coins="16" data-price="0.25"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>16</span></div><div class="price">US$0.25</div></div>
       <div class="package" data-coins="70" data-price="0.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>70</span></div><div class="price">US$0.99</div></div>
       <div class="package" data-coins="350" data-price="4.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>350</span></div><div class="price">US$4.99</div></div>
-      <div class="package" data-coins="700" data-price="6.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>700</span></div><div class="price">US$6.99</div></div>
+      <div class="package" data-coins="700" data-price="9.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>700</span></div><div class="price">US$9.99</div></div>
       <div class="package" data-coins="1400" data-price="19.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>1,400</span></div><div class="price">US$19.99</div></div>
       <div class="package" data-coins="3500" data-price="49.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>3,500</span></div><div class="price">US$49.99</div></div>
       <div class="package" data-coins="7000" data-price="99.99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>7,000</span></div><div class="price">US$99.99</div></div>
@@ -83,20 +105,33 @@
     </div>
 
     <!-- TikTok ID -->
-    <div class="tiktok-id">
-      <label for="tiktokId">ID TikTok</label>
+    <div class="field">
+      <label for="tiktokId">TikTok ID</label>
       <input type="text" id="tiktokId" placeholder="@username">
     </div>
 
-    <!-- Nút thanh toán -->
-    <button class="btn" onclick="openPM()">Thanh toán</button>
+    <!-- Custom amount (opens keypad) -->
+    <div class="field">
+      <label for="coinAmountBtn">Coin amount (custom)</label>
+      <input id="coinAmountBtn" type="text" placeholder="Tap to enter…" readonly onclick="openQtySheet()">
+    </div>
+
+    <!-- Logos row (outside) -->
+    <div class="payment-logos">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
+      <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+      <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
+    </div>
+
+    <button class="btn" onclick="openPM()">Pay</button>
   </div>
 
-  <!-- Modal chọn 4 phương thức -->
+  <!-- Payment Modal -->
   <div class="pm-modal" id="pmModal">
     <div class="pm-wrap">
       <div class="pm-header">
-        <div class="pm-title">Chọn phương thức thanh toán</div>
+        <div class="pm-title">Order Summary</div>
         <button class="pm-close" onclick="closePM()">×</button>
       </div>
       <div class="pm-list">
@@ -118,60 +153,86 @@
         </div>
       </div>
 
-      <!-- Thẻ ảo Visa -->
+      <!-- Visa virtual card (no number) -->
       <div class="pm-card" id="pmCardBox">
-        <div class="vcard">
-          <div>
-            <div class="vnum">**** **** **** 2611</div>
-            <div class="vmeta">NAME: USER</div>
-          </div>
-          <div class="vmeta">EXP 12/29 · CVV ***</div>
-        </div>
+        <div class="vcard">Visa Card</div>
       </div>
 
       <div class="pm-footer">
-        <div class="pm-total" id="pmTotal">Total: $0.00</div>
+        <div class="pm-total" id="pmTotal">Total: US$0.00</div>
         <button class="pm-pay" onclick="doPay()">Pay now</button>
       </div>
     </div>
   </div>
 
-  <!-- Popup hoàn tất -->
+  <!-- Success popup -->
   <div class="final-modal" id="finalModal">
     <div class="final-card">
       <div class="check"></div>
-      <h3>Đã hoàn tất mua</h3>
-      <p>Bạn đã nạp xu thành công!</p>
+      <h3>Purchase completed</h3>
+      <p>Your coins have been added.</p>
+    </div>
+  </div>
+
+  <!-- Quantity keypad sheet -->
+  <div class="qty-sheet" id="qtySheet" onclick="if(event.target===this) closeQtySheet()">
+    <div class="qty-panel">
+      <div class="qty-handle"></div>
+      <div class="qty-title">Custom amount</div>
+      <div class="qty-range">
+        <img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png" alt="">
+        <span>30 – 2,500,000</span>
+      </div>
+      <div class="qty-display" id="qtyDisplay">0</div>
+      <div class="qty-keypad" id="qtyPad">
+        <div class="qty-key">1</div><div class="qty-key">2</div><div class="qty-key">3</div>
+        <div class="qty-key">4</div><div class="qty-key">5</div><div class="qty-key">6</div>
+        <div class="qty-key">7</div><div class="qty-key">8</div><div class="qty-key">9</div>
+        <div class="qty-key gray" data-act="back">⌫</div><div class="qty-key">000</div><div class="qty-key">0</div>
+      </div>
+      <div class="qty-row">
+        <div class="qty-note">Get 5% bonus on larger packs</div>
+        <div class="qty-total" id="qtyTotal">US$0.00</div>
+      </div>
+      <div class="qty-paybar">
+        <div class="qty-paybtn" onclick="applyQty()">Apply</div>
+      </div>
     </div>
   </div>
 
   <script>
-    // Chọn gói & cập nhật tổng tiền
+    // ===== Helpers =====
+    const RATE = 0.99/70; // 70 coins = US$0.99
+    const fmtUSD = n => 'US$' + (Number(n)||0).toFixed(2);
+    const fmtNum = n => (Number(n)||0).toLocaleString('en-US');
+
+    // ===== Package select (USD) =====
     const packages = document.querySelectorAll('.package');
     const pmTotal = document.getElementById('pmTotal');
-    let selectedCoins = null;
-    let selectedAmount = null;
+    let selectedAmount = 0;
+    let selectedCoins = 0;
 
     packages.forEach(pkg=>{
       pkg.addEventListener('click',()=>{
         packages.forEach(p=>p.classList.remove('selected'));
         pkg.classList.add('selected');
-        selectedCoins = pkg.dataset.coins;
-        selectedAmount = pkg.dataset.price;
-        pmTotal.textContent = 'Total: $' + selectedAmount;
+        selectedCoins = parseInt(pkg.dataset.coins)||0;
+        selectedAmount = parseFloat(pkg.dataset.price)||0;
+        pmTotal.textContent = 'Total: ' + fmtUSD(selectedAmount);
       });
     });
 
-    // Modal phương thức
+    // ===== Payment Modal =====
     const pmModal = document.getElementById('pmModal');
     const pmItems = document.querySelectorAll('.pm-item');
     const pmCardBox = document.getElementById('pmCardBox');
+
     function openPM(){
-      if(!selectedCoins){
-        alert('Vui lòng chọn gói xu.');
-        return;
-      }
       pmModal.style.display='block';
+      // default select Visa
+      pmItems.forEach(i=>i.classList.remove('active'));
+      const visa = document.querySelector('.pm-item[data-method="visa"]');
+      if(visa){ visa.classList.add('active'); pmCardBox.style.display='block'; }
     }
     function closePM(){
       pmModal.style.display='none';
@@ -179,23 +240,70 @@
       pmItems.forEach(i=>i.classList.remove('active'));
     }
     pmItems.forEach(item=>{
-      item.addEventListener('click',()=>{
+      item.addEventListener('click', ()=>{
         pmItems.forEach(i=>i.classList.remove('active'));
         item.classList.add('active');
-        if(item.dataset.method==='visa'){
-          pmCardBox.style.display='block';
-        }else{
-          pmCardBox.style.display='none';
-        }
+        pmCardBox.style.display = item.dataset.method==='visa' ? 'block' : 'none';
       });
     });
 
-    // Thanh toán giả lập
-    const finalModal = document.getElementById('finalModal');
+    // ===== Pay flow: 1.5s spinner then success =====
     function doPay(){
       pmModal.style.display='none';
-      finalModal.style.display='block';
-      setTimeout(()=>{ finalModal.style.display='none'; }, 1800);
+      const spinner = document.createElement('div');
+      spinner.className='spinner';
+      document.body.appendChild(spinner);
+      setTimeout(()=>{
+        spinner.remove();
+        document.getElementById('finalModal').style.display='block';
+        setTimeout(()=>{ document.getElementById('finalModal').style.display='none'; }, 1800);
+      },1500);
+    }
+
+    // ===== Quantity keypad sheet =====
+    const COIN_MIN = 30, COIN_MAX = 2500000;
+    const qtySheet = document.getElementById('qtySheet');
+    const qtyDisplay = document.getElementById('qtyDisplay');
+    const qtyTotal = document.getElementById('qtyTotal');
+    const qtyPad = document.getElementById('qtyPad');
+    const coinAmountBtn = document.getElementById('coinAmountBtn');
+
+    function openQtySheet(){
+      qtySheet.style.display = 'block';
+      const cur = selectedCoins || 0;
+      qtyDisplay.textContent = fmtNum(cur);
+      qtyTotal.textContent = fmtUSD(cur * RATE);
+    }
+    function closeQtySheet(){ qtySheet.style.display='none'; }
+
+    qtyPad.addEventListener('click', (e)=>{
+      const key = e.target.closest('.qty-key');
+      if(!key) return;
+      let raw = qtyDisplay.textContent.replace(/,/g,'');
+      let val = parseInt(raw||'0',10);
+      const txt = key.textContent.trim();
+      const act = key.dataset.act;
+
+      if(act === 'back'){ val = Math.floor(val/10); }
+      else if(txt === '000'){ val = Number(String(val||'0') + '000'); }
+      else { val = Number(String(val||'') + txt); }
+
+      if(val>0 && val<COIN_MIN) val = COIN_MIN;
+      if(val>COIN_MAX) val = COIN_MAX;
+
+      qtyDisplay.textContent = fmtNum(val);
+      qtyTotal.textContent = fmtUSD(val * RATE);
+    });
+
+    function applyQty(){
+      const val = parseInt(qtyDisplay.textContent.replace(/,/g,''),10) || 0;
+      selectedCoins = val;
+      selectedAmount = val * RATE;
+      coinAmountBtn.value = val ? (fmtNum(val) + ' coins') : '';
+      pmTotal.textContent = 'Total: ' + fmtUSD(selectedAmount);
+      closeQtySheet();
+      // also clear package selection so user knows it's custom
+      packages.forEach(p=>p.classList.remove('selected'));
     }
   </script>
 </body>
