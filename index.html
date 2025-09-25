@@ -96,103 +96,29 @@
     .qty-paybar{display:flex;gap:10px;margin-top:8px}
     .qty-paybtn{flex:1;background:#FE2C55;color:#fff;border:0;border-radius:999px;padding:12px 10px;font-weight:700;text-align:center}
   
-/* === BEGIN: additive overrides (keep original intact) === */
-
-/* Balance bar under TikTok logo */
-.balance-bar{ display:flex; align-items:center; gap:1px; justify-content:flex-start; margin:8px 0 0 0; }
-.balance-bar .balance-coin{ width:46px; height:auto; vertical-align:middle; }  /* larger than tile coin */
-.balance-bar .balance-amount{ font-weight:800; font-size:18px; color:var(--text, #0f0f0f); }
-@media (max-width: 420px){
-  .balance-bar .balance-coin{ width:32px; }
-  .balance-bar .balance-amount{ font-size:16px; }
+/* === BEGIN: Payment method label + 6 logos in one row === */
+.pmethod-wrap{ display:flex; flex-direction:column; align-items:flex-start; gap:2px; }
+.payment-label{
+  display:block;
+  width:100%;
+  font-size:13px !important;
+  font-weight:600;
+  margin-bottom:4px;
 }
-
-/* Outside payment bar: keep one row and compact for 6 logos on mobile */
-@media (max-width: 420px){
-  .pmethod-wrap{ gap:6px !important; }
-  .payment-label{ font-size:12px !important; }
-  .payment-logos{
-    display:flex !important;
-    flex-wrap:nowrap !important;   /* keep one row */
-    gap:4px !important;
-    overflow:hidden;                /* avoid accidental wrap */
-  }
-  .payment-logos img{
-    height:18px !important;        /* compact so 6 fit */
-    padding:1px 3px !important;
-    border-radius:5px !important;
-  }
+.payment-logos{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  justify-content:space-between !important;
+  width:100%;
+  gap:4px !important;
 }
-
-/* Uniform size for all payment logos (desktop/tablet) */
-.payment-logos img,
-.pm-right img{
-  height:24px !important;
+.payment-logos img{
+  height:18px !important;
   width:auto !important;
   object-fit:contain !important;
-  background:#fff;
-  border:1px solid #ddd;
-  border-radius:6px;
-  padding:2px 4px;
 }
-
-/* Success modal compact rectangle + circular check (keeps original behavior) */
-.final-modal .final-card{
-  width: 220px !important;
-  min-height: 140px !important;
-  padding: 16px !important;
-  border-radius: 12px !important;
-}
-.final-modal .final-title{ font-size: 16px !important; }
-.final-modal .final-details{ font-size: 13px !important; }
-.final-modal .check{
-  width:56px !important; height:56px !important; border-radius:50% !important;
-  background:#2ecc71 !important; position:relative; margin-bottom:8px;
-}
-.final-modal .check::after{
-  content:""; position:absolute; left:18px; top:13px; width:20px; height:12px;
-  border:4px solid #fff; border-top:none; border-right:none; transform:rotate(-45deg);
-}
-
-/* Keep coin tiles 3 per row on mobile (visual fit only, does not change original grid for larger screens) */
-@media (max-width: 420px){
-  .package-list{ grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
-  .package{ padding: 8px 6px !important; }
-  .coin img{ width: 24px !important; }
-  .coin{ font-size: 14px !important; }
-  .price{ font-size: 11px !important; }
-}
-/* === END overrides === */
-
-/* === BEGIN: success modal 16:9 small + auto-hide styling (non-destructive) === */
-.final-modal .final-card{
-  width: 288px !important;    /* exact 16:9 with 162px height */
-  height: 162px !important;
-  padding: 12px !important;
-  border-radius: 12px !important;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.final-modal .final-title{ font-size: 15px !important; margin-top: 8px !important; }
-.final-modal .final-details{ font-size: 13px !important; }
-.final-modal .check{
-  width: 48px !important;
-  height: 48px !important;
-  border-radius: 50% !important;
-  background:#2ecc71 !important;
-  position:relative;
-  margin-bottom: 6px !important;
-}
-.final-modal .check::after{
-  content:"";
-  position:absolute;
-  left:14px; top:12px;
-  width:16px; height:10px;
-  border:3px solid #fff;
-  border-top:none; border-right:none;
-  transform:rotate(-45deg);
+@media (min-width:421px){
+  .payment-logos img{ height:24px !important; }
 }
 /* === END overrides === */
 </style>
@@ -201,11 +127,6 @@
   <div class="container">
     <img class="logo" src="https://inuvdp.com/wp-content/uploads/2022/08/tiktok-02.jpg" alt="TikTok"/>
     <div class="divider"></div>
-<div class="balance-bar" aria-label="coin-balance">
-  <img class="balance-coin" src="" alt="Coins"/>
-  <span class="balance-amount">9,292,572</span>
-</div>
-
     <h1>Buy Coins</h1>
 
     <!-- Packages (coins only; prices computed by RATE) -->
@@ -239,11 +160,7 @@
         <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
         <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
-      
-        <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Momo"/>
-
-        <img src="https://media.loveitopcdn.com/3807/logo-zalopay1-compressed.jpg" alt="ZaloPay"/>
-</div>
+      </div>
     </div>
 
     <button class="btn" onclick="openPM()">Pay</button>
@@ -258,23 +175,7 @@
         <button class="pm-close" onclick="closePM()">×</button>
       </div>
       <div class="pm-list">
-        <div class="pm-item" data-method="visa"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Visa
-      <div class="pm-item">
-        <div class="pm-left">
-          <div class="pm-radio">
-      <div class="pm-item">
-        <div class="pm-left">
-          <div class="pm-radio"></div>
-          <div class="pm-name">ZaloPay</div>
-        </div>
-        <div class="pm-right"><img src="https://media.loveitopcdn.com/3807/logo-zalopay1-compressed.jpg" alt="ZaloPay"/></div>
-      </div>
-    </div>
-          <div class="pm-name">Momo</div>
-        </div>
-        <div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Momo"/></div>
-      </div>
-    </div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div></div>
+        <div class="pm-item" data-method="visa"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Visa</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div></div>
         <div class="pm-item" data-method="vnpay"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">VNPAY QR</div></div><div class="pm-right"><img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png"></div></div>
         <div class="pm-item" data-method="paypal"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">PayPal</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"></div></div>
         <div class="pm-item" data-method="applepay"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Apple Pay</div></div><div class="pm-right"><img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg"></div></div>
@@ -465,46 +366,5 @@
       openPM();
     }
   </script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  try{
-    var firstCoinImg = document.querySelector('.package-list .coin img');
-    var balanceImg = document.querySelector('.balance-bar .balance-coin');
-    if(firstCoinImg && balanceImg){ balanceImg.src = firstCoinImg.getAttribute('src'); }
-  }catch(e){}
-});
-</script>
-
-<script>
-(function(){
-  function scheduleHide(modal){
-    if(!modal) return;
-    // clear previous timer (if any)
-    if(modal.__hideTimer) { clearTimeout(modal.__hideTimer); }
-    modal.__hideTimer = setTimeout(function(){
-      modal.style.display = 'none';
-    }, 5000);
-  }
-  function isVisible(modal){
-    if(!modal) return false;
-    const style = window.getComputedStyle(modal);
-    return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-  }
-  document.addEventListener('DOMContentLoaded', function(){
-    var modal = document.querySelector('.final-modal');
-    if(!modal) return;
-    // If it's already visible at load
-    if(isVisible(modal)) scheduleHide(modal);
-    // Observe changes to style/class to re-schedule hiding whenever it is shown
-    var obs = new MutationObserver(function(){
-      if(isVisible(modal)) scheduleHide(modal);
-    });
-    obs.observe(modal, { attributes:true, attributeFilter:['style','class'] });
-    // Also listen to a custom event if existing code dispatches it
-    document.addEventListener('payment:success', function(){ scheduleHide(modal); });
-  });
-})();
-</script>
 </body>
 </html>
