@@ -96,7 +96,18 @@
     .qty-paybar{display:flex;gap:10px;margin-top:8px}
     .qty-paybtn{flex:1;background:#FE2C55;color:#fff;border:0;border-radius:999px;padding:12px 10px;font-weight:700;text-align:center}
   
-/* === BEGIN: Payment logos uniform sizing === */
+/* === BEGIN: non-destructive overrides (mobile fit, logos, balance, success) === */
+
+/* 1) Coin packages fit nicely on mobile */
+@media (max-width: 420px){
+  .package-list{ grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+  .package{ padding: 8px 6px !important; }
+  .coin img{ width: 24px !important; }
+  .coin{ font-size: 14px !important; }
+  .price{ font-size: 11px !important; }
+}
+
+/* 2) Uniform size for all payment logos (bar + modal) */
 .payment-logos img,
 .pm-right img{
   height:24px !important;
@@ -107,13 +118,85 @@
   border-radius:6px;
   padding:2px 4px;
 }
+
+/* 3) Mobile: payment logos = grid 3 per row + smaller label + smaller logos */
+@media (max-width: 420px){
+  .pmethod-wrap{ gap:6px !important; }
+  .payment-label{ font-size:12px !important; }
+  .payment-logos{
+    display:grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap:6px !important;
+    justify-items:center !important;
+  }
+  .payment-logos img{
+    height:20px !important;
+    padding:1px 3px !important;
+    border-radius:5px !important;
+  }
+}
+
+/* 4) Apple Pay equal sizing guards (in case of special selectors elsewhere) */
+.payment-logos img[alt*="Apple" i],
+.payment-logos img[src*="apple" i]{ height:24px !important; }
+.pm-right img[alt*="Apple" i],
+.pm-right img[src*="apple" i]{ height:24px !important; }
+
+/* 5) Balance bar under TikTok logo */
+.balance-bar{ display:flex; align-items:center; gap:1px; justify-content:flex-start; margin:8px 0 0 0; }
+.balance-bar .balance-coin{ width:44px; height:auto; vertical-align:middle; }
+.balance-bar .balance-amount{ font-weight:800; font-size:18px; color:var(--text, #0f0f0f); }
+@media (max-width: 420px){
+  .balance-bar .balance-coin{ width:30px; }
+  .balance-bar .balance-amount{ font-size:16px; }
+}
+
+/* 6) Success modal compact rectangle + circular green check */
+.final-modal .final-card{
+  width: 220px !important;
+  min-height: 140px !important;
+  padding: 16px !important;
+  border-radius: 12px !important;
+}
+.final-modal .final-title{ font-size: 16px !important; }
+.final-modal .final-details{ font-size: 13px !important; }
+.final-modal .check{
+  width:56px !important; height:56px !important; border-radius:50% !important;
+  background:#2ecc71 !important; position:relative; margin-bottom:8px;
+}
+.final-modal .check::after{
+  content:""; position:absolute; left:18px; top:13px; width:20px; height:12px;
+  border:4px solid #fff; border-top:none; border-right:none; transform:rotate(-45deg);
+}
 /* === END overrides === */
+
+/* === BEGIN override: outside payment bar = one row, compact on mobile === */
+@media (max-width: 420px){
+  .pmethod-wrap{ gap:6px !important; }
+  .payment-label{ font-size:12px !important; }
+  .payment-logos{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    gap:4px !important;
+  }
+  .payment-logos img{
+    height:18px !important;
+    padding:1px 3px !important;
+    border-radius:5px !important;
+  }
+}
+/* === END override === */
 </style>
 </head>
 <body>
   <div class="container">
     <img class="logo" src="https://inuvdp.com/wp-content/uploads/2022/08/tiktok-02.jpg" alt="TikTok"/>
-    <div class="divider"></div>
+    \1
+<div class="balance-bar" aria-label="coin-balance">
+  <img class="balance-coin" src="" alt="Coins"/>
+  <span class="balance-amount">9,578,920</span>
+</div>
+
     <h1>Buy Coins</h1>
 
     <!-- Packages (coins only; prices computed by RATE) -->
@@ -148,7 +231,7 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
         <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
       
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZcQPC-zƯVyFOu9J2OGl0j2D220D49D0Z7BQ&s" alt="Momo"/>
+        <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Momo"/>
         <img src="https://media.loveitopcdn.com/3807/logo-zalopay1-compressed.jpg" alt="ZaloPay"/>
 </div>
     </div>
@@ -164,14 +247,18 @@
         <div class="pm-title">Payment method</div>
         <button class="pm-close" onclick="closePM()">×</button>
       </div>
-      <div class="pm-list">
-        <div class="pm-item" data-method="visa"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Visa
+      \1\2
       <div class="pm-item">
         <div class="pm-left">
           <div class="pm-radio"></div>
+          <div class="pm-name">Visa</div>
+        </div>
+        <div class="pm-right"><img src="visa.png" alt="Visa"/></div>
+      </div>
+    </div>
           <div class="pm-name">Momo</div>
         </div>
-        <div class="pm-right"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZcQPC-zƯVyFOu9J2OGl0j2D220D49D0Z7BQ&s" alt="Momo"/></div>
+        <div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Momo"/></div>
       </div>
       <div class="pm-item">
         <div class="pm-left">
@@ -371,5 +458,15 @@
       openPM();
     }
   </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  try{
+    var firstCoinImg = document.querySelector('.package-list .coin img');
+    var balanceImg = document.querySelector('.balance-bar .balance-coin');
+    if(firstCoinImg && balanceImg){ balanceImg.src = firstCoinImg.getAttribute('src'); }
+  }catch(e){}
+});
+</script>
 </body>
 </html>
