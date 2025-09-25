@@ -121,6 +121,94 @@
   .payment-logos img{ height:24px !important; }
 }
 /* === END overrides === */
+
+/* === BEGIN: Fix Payment method row (label on top, 6 logos one row, no wrap) === */
+.pmethod-wrap{ display:flex; flex-direction:column; align-items:flex-start; width:100%; }
+.payment-label{ display:block; width:100%; font-size:13px !important; font-weight:600; margin-bottom:6px; text-align:left; }
+.payment-logos{ display:flex !important; flex-wrap:nowrap !important; gap:6px !important; justify-content:flex-start !important; width:100%; overflow:hidden; }
+.payment-logos img{ height:20px !important; width:auto !important; object-fit:contain !important; border-radius:6px; padding:1px 3px; border:1px solid #e5e5e5; background:#fff; }
+@media (max-width: 420px){
+  .payment-logos img{ height:16px !important; padding:1px 2px !important; }
+}
+/* === END === */
+
+/* === BEGIN: Coin packages grid 3x3 === */
+.package-list{ 
+  display:grid !important; 
+  grid-template-columns: repeat(3, 1fr) !important; 
+  gap:12px !important; 
+}
+.package{ padding:10px !important; }
+/* === END === */
+
+/* === BEGIN: Payment method bar === */
+.pmethod-wrap{ display:flex; flex-direction:column; align-items:flex-start; width:100%; }
+.payment-label{ display:block; width:100%; font-size:13px !important; font-weight:600; margin-bottom:4px; text-align:left; }
+.payment-logos{ display:flex !important; flex-wrap:nowrap !important; gap:2px !important; justify-content:flex-start !important; width:100%; }
+.payment-logos img{ height:20px !important; width:auto !important; object-fit:contain !important; }
+/* === END === */
+
+/* === BEGIN: Success modal compact 16:9 === */
+.final-modal .final-card{
+  width: 260px !important; 
+  height: 146px !important;  /* ~16:9 ratio */
+  padding: 12px !important;
+  border-radius: 12px !important;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.final-modal .final-title{ font-size:15px !important; margin-top:8px; }
+.final-modal .final-details{ font-size:13px !important; text-align:center; }
+.final-modal .check{
+  width:48px !important; height:48px !important; border-radius:50% !important;
+  background:#2ecc71 !important; position:relative; margin-bottom:8px;
+}
+.final-modal .check::after{
+  content:""; position:absolute; left:14px; top:12px; width:16px; height:10px;
+  border:3px solid #fff; border-top:none; border-right:none; transform:rotate(-45deg);
+}
+/* === END === */
+
+/* === BEGIN: Mobile coin tiles fit & smaller corner radius === */
+.package{ border-radius:14px !important; }  /* less rounded globally */
+
+@media (max-width: 420px){
+  .package-list{
+    display:grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap:8px !important;                 /* tighter gaps */
+  }
+  .package{
+    padding:8px 6px !important;         /* smaller padding to avoid overflow */
+    border-radius:12px !important;      /* less rounded on mobile */
+  }
+  .coin img{ width:22px !important; }   /* smaller coin icon */
+  .coin{ font-size:14px !important; }   /* smaller number */
+  .price{ font-size:11px !important; }  /* smaller USD price */
+}
+/* === END === */
+
+/* === BEGIN: Fix TikTok logo background === */
+.logo-tiktok img{
+  background: transparent !important;
+  mix-blend-mode: multiply;
+  filter: brightness(1.05) contrast(1.2);
+}
+/* === END === */
+
+/* === BEGIN: Ensure USD price shows under each coin tile === */
+.package{ display:flex !important; flex-direction:column !important; align-items:center !important; }
+.package .coin{ display:flex !important; align-items:center !important; justify-content:center !important; }
+.package .price{
+  display:block !important;
+  margin-top:4px !important;
+  font-size:12px !important;
+  line-height:1.1 !important;
+  color: var(--tk-gray-text, #6B6F76) !important;
+}
+@media (max-width:420px){
+  .package .price{ font-size:11px !important; }
+}
+/* === END === */
 </style>
 </head>
 <body>
@@ -159,8 +247,7 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
         <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
-        <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
-      </div>
+        <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay"></div>
     </div>
 
     <button class="btn" onclick="openPM()">Pay</button>
@@ -366,5 +453,22 @@
       openPM();
     }
   </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  try{
+    document.querySelectorAll('.package').forEach(function(pkg){
+      var hasPrice = pkg.querySelector('.price');
+      var dataUsd = pkg.getAttribute('data-price') || pkg.getAttribute('data-usd') || pkg.dataset && (pkg.dataset.price || pkg.dataset.usd);
+      if(!hasPrice && dataUsd){
+        var span = document.createElement('div');
+        span.className = 'price';
+        span.textContent = dataUsd;
+        pkg.appendChild(span);
+      }
+    });
+  }catch(e){}
+});
+</script>
 </body>
 </html>
