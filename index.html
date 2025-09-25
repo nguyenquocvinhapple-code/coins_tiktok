@@ -96,25 +96,16 @@
     .qty-paybar{display:flex;gap:10px;margin-top:8px}
     .qty-paybtn{flex:1;background:#FE2C55;color:#fff;border:0;border-radius:999px;padding:12px 10px;font-weight:700;text-align:center}
   
-/* === BEGIN: Mobile fit + Apple Pay sizing overrides (non-destructive) === */
-/* Make 9 coin packages fit mobile screens neatly */
-@media (max-width: 420px){
-  .package-list{ grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
-  .package{ padding: 8px 6px !important; }
-  .coin img{ width: 24px !important; }
-  .coin{ font-size: 14px !important; }
-  .price{ font-size: 11px !important; }
-}
-
-/* Apple Pay logo size equal to other logos (outside bar + modal) */
-.payment-logos img[alt*="Apple" i],
-.payment-logos img[src*="apple" i]{
-  height: 24px !important;
-}
-
-.pm-right img[alt*="Apple" i],
-.pm-right img[src*="apple" i]{
-  height: 22px !important;
+/* === BEGIN: Payment logos uniform sizing === */
+.payment-logos img,
+.pm-right img{
+  height:24px !important;
+  width:auto !important;
+  object-fit:contain !important;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:6px;
+  padding:2px 4px;
 }
 /* === END overrides === */
 </style>
@@ -156,7 +147,10 @@
         <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
         <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
-      </div>
+      
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZcQPC-zƯVyFOu9J2OGl0j2D220D49D0Z7BQ&s" alt="Momo"/>
+        <img src="https://media.loveitopcdn.com/3807/logo-zalopay1-compressed.jpg" alt="ZaloPay"/>
+</div>
     </div>
 
     <button class="btn" onclick="openPM()">Pay</button>
@@ -171,7 +165,22 @@
         <button class="pm-close" onclick="closePM()">×</button>
       </div>
       <div class="pm-list">
-        <div class="pm-item" data-method="visa"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Visa</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div></div>
+        <div class="pm-item" data-method="visa"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Visa
+      <div class="pm-item">
+        <div class="pm-left">
+          <div class="pm-radio"></div>
+          <div class="pm-name">Momo</div>
+        </div>
+        <div class="pm-right"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZcQPC-zƯVyFOu9J2OGl0j2D220D49D0Z7BQ&s" alt="Momo"/></div>
+      </div>
+      <div class="pm-item">
+        <div class="pm-left">
+          <div class="pm-radio"></div>
+          <div class="pm-name">ZaloPay</div>
+        </div>
+        <div class="pm-right"><img src="https://media.loveitopcdn.com/3807/logo-zalopay1-compressed.jpg" alt="ZaloPay"/></div>
+      </div>
+</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div></div>
         <div class="pm-item" data-method="vnpay"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">VNPAY QR</div></div><div class="pm-right"><img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png"></div></div>
         <div class="pm-item" data-method="paypal"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">PayPal</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"></div></div>
         <div class="pm-item" data-method="applepay"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Apple Pay</div></div><div class="pm-right"><img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg"></div></div>
