@@ -14,10 +14,10 @@
     h1{margin:8px 0 16px;font-size:20px}
 
     /* Coin packages */
-    .package-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px}
+    .package-list{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
     .package{border:1px solid transparent;border-radius:18px;background:var(--tk-gray);box-shadow:none;padding:14px 16px;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .08s}
     .package:active{transform:scale(.99)}
-    .coin{display:flex;align-items:center;justify-content:center;gap:2px;font-size:20px;font-weight:800;color:var(--text)}
+    .coin{display:flex;align-items:center;justify-content:center;gap:1px;font-size:20px;font-weight:800;color:var(--text)}
     .coin img{width:40px;height:auto;vertical-align:middle}
     .price{margin-top:6px;font-size:14px;color:var(--tk-gray-text)}
     .package.selected{border-color:var(--tk-red);background:#FFF1F4;box-shadow:inset 0 0 0 2px rgba(254,44,85,.06)}
@@ -33,6 +33,9 @@
     .payment-label{font-weight:600;font-size:14px;margin-right:2px}
     .payment-logos{display:flex;gap:8px;align-items:center;justify-content:flex-start}
     .payment-logos img{height:24px;width:auto;background:#fff;border:1px solid #ddd;border-radius:6px;padding:2px 4px;flex:0 0 auto}
+    /* Bigger Apple Pay logo */
+    .pm-right img[alt*="Apple"], .payment-logos img[alt*="Apple"]{height:32px !important;}
+
 
     .btn{margin-top:6px;width:100%;background:#FE2C55;color:#fff;border:0;border-radius:10px;padding:12px;font-size:16px;font-weight:700;cursor:pointer}
 
@@ -45,7 +48,7 @@
     .pm-title{font-size:20px;font-weight:700}
     .pm-close{background:transparent;border:0;font-size:22px;cursor:pointer}
     .pm-list{margin:16px 0;display:flex;flex-direction:column;gap:10px}
-    .pm-item{display:flex;justify-content:space-between;align-items:center;border:1px solid #ddd;border-radius:12px;padding:12px;cursor:pointer;background:#fff}
+    .pm-item{display:flex;justify-content:space-between;align-items:center;border:1px solid #ddd;border-radius:12px;padding:8px 10px;cursor:pointer;background:#ffffont-size:14px}
     .pm-item.active{border-color:#FE2C55;box-shadow:0 0 0 2px rgba(254,44,85,.18)}
     .pm-left{display:flex;align-items:center;gap:10px}
     .pm-radio{width:18px;height:18px;border-radius:50%;border:2px solid #bbb;position:relative}
@@ -53,7 +56,7 @@
     .pm-item.active .pm-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#FE2C55}
     .pm-name{font-weight:600}
     .pm-right{display:flex;gap:10px;align-items:center}
-    .pm-right img{height:22px;width:auto;object-fit:contain;flex:0 0 auto}
+    .pm-right img{height:18px;width:auto;object-fit:contain;flex:0 0 auto}
 
     .pm-card{display:none;margin-top:12px;border:1px dashed #ccc;border-radius:10px;padding:12px;background:#fafafa}
     .pm-card .vcard{background:linear-gradient(135deg,#FE2C55,#25F4EE);color:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;font-weight:700}
@@ -68,7 +71,7 @@
 
     /* Success */
     .final-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1300;display:flex;align-items:center;justify-content:center}
-    .final-card{background:#fff;border-radius:20px;padding:20px;width:320px;height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.15);text-align:center}
+    .final-card{background:#fff;border-radius:12px;padding:20px;width:260px;min-height:160px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.15);text-align:center}
     .final-close{position:absolute;right:10px;top:8px;background:transparent;border:0;font-size:22px;cursor:pointer}
     .check{width:56px;height:56px;border-radius:16px;background:#2ecc71;position:relative;margin-bottom:8px}
     .check::after{content:"";position:absolute;left:18px;top:13px;width:20px;height:12px;border:4px solid #fff;border-top:none;border-right:none;transform:rotate(-45deg)}
@@ -340,5 +343,22 @@
       openPM();
     }
   </script>
+
+<script>
+(function(){
+  const modal = document.querySelector('.final-modal');
+  if(!modal) return;
+  let hideTimer = null;
+  const obs = new MutationObserver(() => {
+    const display = getComputedStyle(modal).display;
+    if (display !== 'none') {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(()=>{ modal.style.display='none'; }, 5000);
+    }
+  });
+  obs.observe(modal, { attributes:true, attributeFilter:['style','class'] });
+})();
+</script>
+
 </body>
 </html>
