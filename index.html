@@ -13,6 +13,7 @@
     .divider{margin-top:70px;border-bottom:1px solid #ddd;margin-bottom:12px}
     h1{margin:8px 0 16px;font-size:20px}
 
+    /* Coin packages */
     .package-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px}
     .package{border:1px solid transparent;border-radius:18px;background:var(--tk-gray);box-shadow:none;padding:14px 16px;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .08s}
     .package:active{transform:scale(.99)}
@@ -27,14 +28,16 @@
     .field input{width:100%;padding:10px;font-size:14px;border:1px solid #ccc;border-radius:8px}
     .field input[readonly]{background:#fafafa;cursor:pointer}
 
-    .payment-logos{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-start;margin:14px 0}
-    .payment-logos img{width:72px;height:40px;object-fit:contain;object-position:left center;transition:transform .15s}
+    /* Payment logos: equal size, equal gap, aligned left */
+    .payment-logos{display:flex;flex-wrap:nowrap;gap:20px;justify-content:flex-start;align-items:center;margin:14px 0}
+    .payment-logos img{width:80px;height:40px;object-fit:contain;object-position:left center;flex:0 0 auto;transition:transform .15s}
     .payment-logos img:active{transform:scale(.95)}
 
     .btn{margin-top:6px;width:100%;background:var(--tk-red);color:#fff;border:0;border-radius:10px;padding:12px;font-size:16px;font-weight:700;cursor:pointer}
 
     .last-purchase{display:none;margin-top:10px;font-size:14px;color:#333;background:#f8f8f8;border:1px solid #eee;border-radius:10px;padding:10px;text-align:left}
 
+    /* Payment Modal */
     .pm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100}
     .pm-wrap{background:#fff;border-radius:16px;max-width:520px;margin:60px auto;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,.2);position:relative}
     .pm-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #eee}
@@ -48,8 +51,8 @@
     .pm-item.active .pm-radio{border-color:var(--tk-red)}
     .pm-item.active .pm-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--tk-red)}
     .pm-name{font-weight:600}
-    .pm-right{display:flex;gap:8px;align-items:center}
-    .pm-right img{width:72px;height:22px;object-fit:contain}
+    .pm-right{display:flex;gap:12px;align-items:center}
+    .pm-right img{width:80px;height:24px;object-fit:contain;flex:0 0 auto}
 
     .pm-card{display:none;margin-top:12px;border:1px dashed #ccc;border-radius:10px;padding:12px;background:#fafafa}
     .pm-card .vcard{background:linear-gradient(135deg,var(--tk-red),var(--tk-cyan));color:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;font-weight:700}
@@ -57,10 +60,12 @@
     .pm-total{font-weight:700}
     .pm-pay{background:var(--tk-red);color:#fff;border:0;border-radius:999px;padding:12px 20px;font-weight:700;cursor:pointer}
 
+    /* Loading */
     .loading-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200;display:flex;align-items:center;justify-content:center}
     .spinner{width:48px;height:48px;border:5px solid #f3f3f3;border-top:5px solid var(--tk-red);border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
 
+    /* Success */
     .final-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1300;display:flex;align-items:center;justify-content:center}
     .final-card{background:#fff;border-radius:20px;padding:20px;width:320px;height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.15);text-align:center}
     .final-close{position:absolute;right:10px;top:8px;background:transparent;border:0;font-size:22px;cursor:pointer}
@@ -70,6 +75,7 @@
     .final-details{margin-top:4px;font-size:15px;color:#333}
     .final-details b{font-weight:800}
 
+    /* Keypad overlay (smooth) */
     .qty-sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,.0);z-index:1200;transition:background .25s ease}
     .qty-sheet.show{background:rgba(0,0,0,.45)}
     .qty-panel{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top-left-radius:16px;border-top-right-radius:16px;padding:14px 16px 18px;box-shadow:0 -8px 30px rgba(0,0,0,.15);transform:translateY(100%);transition:transform .25s ease}
@@ -96,17 +102,17 @@
     <div class="divider"></div>
     <h1>Buy Coins</h1>
 
-    <!-- Packages (updated) -->
+    <!-- Packages -->
     <div class="package-list" id="pkgList">
       <div class="package" data-coins="350" data-price="4.95"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>350</span></div><div class="price"></div></div>
       <div class="package" data-coins="700" data-price="9.9"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>700</span></div><div class="price"></div></div>
       <div class="package" data-coins="1400" data-price="19.8"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>1400</span></div><div class="price"></div></div>
       <div class="package" data-coins="3500" data-price="49.5"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>3500</span></div><div class="price"></div></div>
-      <div class="package" data-coins="7000" data-price="99.0"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>7000</span></div><div class="price"></div></div>
+      <div class="package" data-coins="7000" data-price="99"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>7000</span></div><div class="price"></div></div>
       <div class="package" data-coins="17500" data-price="247.5"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>17500</span></div><div class="price"></div></div>
-      <div class="package" data-coins="50000" data-price="707.1428571428571"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>50000</span></div><div class="price"></div></div>
-      <div class="package" data-coins="100000" data-price="1414.2857142857142"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>100000</span></div><div class="price"></div></div>
-      <div class="package" data-coins="300000" data-price="4242.857142857143"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>300000</span></div><div class="price"></div></div>
+      <div class="package" data-coins="50000" data-price="707.142857"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>50000</span></div><div class="price"></div></div>
+      <div class="package" data-coins="100000" data-price="1414.285714"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>100000</span></div><div class="price"></div></div>
+      <div class="package" data-coins="300000" data-price="4242.857142"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>300000</span></div><div class="price"></div></div>
     </div>
 
     <div class="field">
@@ -119,6 +125,7 @@
       <input id="coinAmountBtn" type="text" placeholder="Tap to enter…" readonly onclick="openQtySheet()">
     </div>
 
+    <!-- Logos row -->
     <div class="payment-logos">
       <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
       <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
@@ -140,19 +147,12 @@
       <div class="pm-list">
         <div class="pm-item" data-method="visa">
           <div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Visa</div></div>
-          <div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa"></div>
-        </div>
-        <div class="pm-item" data-method="vnpay">
-          <div class="pm-left"><span class="pm-radio"></span><div class="pm-name">VNPAY QR</div></div>
-          <div class="pm-right"><img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY"></div>
-        </div>
-        <div class="pm-item" data-method="paypal">
-          <div class="pm-left"><span class="pm-radio"></span><div class="pm-name">PayPal</div></div>
-          <div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal"></div>
-        </div>
-        <div class="pm-item" data-method="applepay">
-          <div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Apple Pay</div></div>
-          <div class="pm-right"><img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay"></div>
+          <div class="pm-right">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
+            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+            <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
+          </div>
         </div>
       </div>
 
@@ -187,7 +187,7 @@
       <div class="qty-title">Custom amount</div>
       <div class="qty-range">
         <img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png" alt="">
-        <span>0 – 2.500.000</span>
+        <span>0 – 2,500,000</span>
       </div>
       <div class="qty-display" id="qtyDisplay">0</div>
       <div class="qty-keypad" id="qtyPad">
@@ -207,12 +207,18 @@
   </div>
 
   <script>
-    // ===== Helpers (EU style) =====
-    const RATE = 0.014142857142857143; // 70 coins = 0,99 USD
-    const fmtNum = n => (Number(n)||0).toLocaleString('de-DE');
-    const fmtUSD = n => 'US$' + (Number(n)||0).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+    // ===== Helpers (ALL COMMAS) =====
+    const RATE = 0.99/70; // 70 coins = 0,99 USD
+    function fmtNum(n){
+      // Start from en-US (commas as thousands), then replace decimals dot to comma (no decimals for coins)
+      return (Number(n)||0).toLocaleString('en-US').replace(/\./g,',');
+    }
+    function fmtUSD(n){
+      // Format with 2 decimals, then replace dot with comma => US$4,242,86
+      return 'US$' + (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}).replace(/\./g,',');
+    }
 
-    // Render package labels with EU formatting
+    // Initialize package labels using custom comma formatting
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.package').forEach(pkg => {
         const coins = parseInt(pkg.dataset.coins, 10) || 0;
@@ -265,7 +271,7 @@
       });
     });
 
-    // ===== Loading -> Success flow =====
+    // ===== Loading -> Success =====
     const loadingModal = document.getElementById('loadingModal');
     const finalModal = document.getElementById('finalModal');
     function doPay(){
@@ -282,7 +288,7 @@
     }
     function closeFinal(){ finalModal.style.display='none'; }
 
-    // ===== Quantity keypad sheet =====
+    // ===== Keypad overlay =====
     const COIN_MAX = 2500000;
     const qtySheet = document.getElementById('qtySheet');
     const qtyDisplay = document.getElementById('qtyDisplay');
@@ -304,7 +310,8 @@
     qtyPad.addEventListener('click', (e)=>{
       const key = e.target.closest('.qty-key');
       if(!key) return;
-      let raw = qtyDisplay.textContent.replace(/\./g,'').replace(/,/g,'.');
+      // Parse by stripping commas (thousands) and interpreting last comma as decimal if any (we don't use decimals for coins)
+      let raw = qtyDisplay.textContent.replace(/,/g,'');
       let val = parseInt(raw||'0',10);
       const txt = key.textContent.trim();
       const act = key.dataset.act;
@@ -320,7 +327,7 @@
     });
 
     function applyQty(){
-      const raw = qtyDisplay.textContent.replace(/\./g,'').replace(/,/g,'.');
+      const raw = qtyDisplay.textContent.replace(/,/g,'');
       const val = parseInt(raw,10) || 0;
       selectedCoins = val;
       selectedAmount = val * RATE;
