@@ -28,9 +28,9 @@
     .field input{width:100%;padding:10px;font-size:14px;border:1px solid #ccc;border-radius:8px}
     .field input[readonly]{background:#fafafa;cursor:pointer}
 
-    /* Payment logos: equal size, equal gap, aligned left */
-    .payment-logos{display:flex;flex-wrap:nowrap;gap:20px;justify-content:flex-start;align-items:center;margin:14px 0}
-    .payment-logos img{width:80px;height:40px;object-fit:contain;object-position:left center;flex:0 0 auto;transition:transform .15s}
+    /* Payment logos: visible row at top — equal size, equal gap, aligned left */
+    .payment-logos{display:flex;flex-wrap:nowrap;gap:14px;justify-content:flex-start;align-items:center;margin:14px 0}
+    .payment-logos img{height:32px;width:auto;object-fit:contain;flex:0 0 auto;transition:transform .15s}
     .payment-logos img:active{transform:scale(.95)}
 
     .btn{margin-top:6px;width:100%;background:var(--tk-red);color:#fff;border:0;border-radius:10px;padding:12px;font-size:16px;font-weight:700;cursor:pointer}
@@ -51,8 +51,8 @@
     .pm-item.active .pm-radio{border-color:var(--tk-red)}
     .pm-item.active .pm-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--tk-red)}
     .pm-name{font-weight:600}
-    .pm-right{display:flex;gap:12px;align-items:center}
-    .pm-right img{width:80px;height:24px;object-fit:contain;flex:0 0 auto}
+    .pm-right{display:flex;gap:10px;align-items:center}
+    .pm-right img{height:22px;width:auto;object-fit:contain;flex:0 0 auto}
 
     .pm-card{display:none;margin-top:12px;border:1px dashed #ccc;border-radius:10px;padding:12px;background:#fafafa}
     .pm-card .vcard{background:linear-gradient(135deg,var(--tk-red),var(--tk-cyan));color:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;font-weight:700}
@@ -125,7 +125,7 @@
       <input id="coinAmountBtn" type="text" placeholder="Tap to enter…" readonly onclick="openQtySheet()">
     </div>
 
-    <!-- Logos row -->
+    <!-- Logos row (ALWAYS VISIBLE) -->
     <div class="payment-logos">
       <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
       <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
@@ -147,12 +147,19 @@
       <div class="pm-list">
         <div class="pm-item" data-method="visa">
           <div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Visa</div></div>
-          <div class="pm-right">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
-            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
-            <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
-          </div>
+          <div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa"></div>
+        </div>
+        <div class="pm-item" data-method="vnpay">
+          <div class="pm-left"><span class="pm-radio"></span><div class="pm-name">VNPAY QR</div></div>
+          <div class="pm-right"><img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY"></div>
+        </div>
+        <div class="pm-item" data-method="paypal">
+          <div class="pm-left"><span class="pm-radio"></span><div class="pm-name">PayPal</div></div>
+          <div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal"></div>
+        </div>
+        <div class="pm-item" data-method="applepay">
+          <div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Apple Pay</div></div>
+          <div class="pm-right"><img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay"></div>
         </div>
       </div>
 
@@ -210,11 +217,9 @@
     // ===== Helpers (ALL COMMAS) =====
     const RATE = 0.99/70; // 70 coins = 0,99 USD
     function fmtNum(n){
-      // Start from en-US (commas as thousands), then replace decimals dot to comma (no decimals for coins)
       return (Number(n)||0).toLocaleString('en-US').replace(/\./g,',');
     }
     function fmtUSD(n){
-      // Format with 2 decimals, then replace dot with comma => US$4,242,86
       return 'US$' + (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}).replace(/\./g,',');
     }
 
@@ -310,7 +315,6 @@
     qtyPad.addEventListener('click', (e)=>{
       const key = e.target.closest('.qty-key');
       if(!key) return;
-      // Parse by stripping commas (thousands) and interpreting last comma as decimal if any (we don't use decimals for coins)
       let raw = qtyDisplay.textContent.replace(/,/g,'');
       let val = parseInt(raw||'0',10);
       const txt = key.textContent.trim();
