@@ -13,7 +13,6 @@
   /* Header */
   .header{display:flex;justify-content:flex-start;align-items:center;gap:10px;margin-bottom:6px}
   .header img.logo-tiktok{height:26px;width:auto}
-  .header .brand{font-weight:800;font-size:20px}
   .rule{height:1px;background:#eaeaea;margin:8px 0 10px}
   h1{margin:6px 0 12px;font-size:20px;font-weight:800}
 
@@ -21,7 +20,7 @@
   .balance-box{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:14px;text-align:left;box-shadow:0 1px 4px rgba(0,0,0,.06)}
   .balance-label{font-size:15px;font-weight:700;margin-bottom:6px}
   .balance-value{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:800;color:#000}
-  .balance-value img{width:28px;height:28px}
+  .balance-value img{width:40px;height:auto;vertical-align:middle}
 
   /* TikTok ID */
   .field{margin-top:14px;text-align:left}
@@ -34,9 +33,9 @@
   .package{border:1px solid transparent;border-radius:16px;background:#F2F3F5;padding:12px;cursor:pointer;transition:all .18s ease;min-height:78px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
   .package:hover{transform:translateY(-1px)}
   .package:active::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg, rgba(254,44,85,.08), rgba(37,244,238,.08));}
-  .coin{display:flex;align-items:center;justify-content:center;gap:6px;font-size:18px;font-weight:800;color:var(--text)}
-  .coin img{width:22px;height:22px}
-  .price{margin-top:6px;font-size:13px;color:#4b4f55}
+  .coin{display:flex;align-items:center;justify-content:center;gap:4px;font-size:20px;font-weight:800;color:var(--text)}
+  .coin img{width:40px;height:auto;vertical-align:middle}
+  .price{margin-top:6px;font-size:14px;color:#4b4f55}
   .package.selected{border-color:var(--tk-red);background:#FFF1F4;box-shadow:inset 0 0 0 2px rgba(254,44,85,.08)}
   .package.custom{border:1px dashed #bbb;background:#fff}
   .package.custom .coin{font-size:14px;font-weight:700}
@@ -61,7 +60,8 @@
   .pm-item.active .pm-radio{border-color:#FE2C55}
   .pm-item.active .pm-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#FE2C55}
   .pm-name{font-weight:600;font-size:14px}
-  .pm-right img{height:18px;width:auto}
+  .pm-right img{height:26px;width:auto}  /* enlarged for consistency */
+
   .pm-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
   .pm-total{font-weight:800}
   .pm-pay{background:#FE2C55;color:#fff;border:0;border-radius:999px;padding:10px 16px;font-weight:800;cursor:pointer}
@@ -76,7 +76,6 @@
   .final-card{background:#fff;border-radius:16px;padding:12px;width:260px;min-height:170px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;box-shadow:0 10px 28px rgba(0,0,0,.15);text-align:center;opacity:0;transform:scale(.96);animation:fadeIn .18s ease forwards}
   @keyframes fadeIn{to{opacity:1; transform:scale(1);}}
   .final-close{position:absolute;right:8px;top:6px;background:transparent;border:0;font-size:20px;cursor:pointer}
-  /* Circle success icon */
   .check{width:44px;height:44px;border-radius:50%;background:#2ecc71;position:relative;margin-bottom:6px}
   .check::after{content:"";position:absolute;left:13px;top:11px;width:16px;height:8px;border:4px solid #fff;border-top:none;border-right:none;transform:rotate(-45deg)}
   .final-title{margin:4px 0 2px 0;font-size:16px;font-weight:800}
@@ -88,7 +87,6 @@
     <!-- Header -->
     <div class="header">
       <img class="logo-tiktok" src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/TikTok_logo.svg/512px-TikTok_logo.svg.png" alt="TikTok"/>
-      <div class="brand">TikTok</div>
     </div>
     <div class="rule"></div>
     <h1>Buy Coins</h1>
@@ -147,13 +145,12 @@
         <div class="pm-item active" data-method="visa"><div class="pm-left"><div class="pm-radio"></div><div class="pm-name">Visa / Mastercard</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"></div></div>
         <div class="pm-item" data-method="paypal"><div class="pm-left"><div class="pm-radio"></div><div class="pm-name">PayPal</div></div><div class="pm-right"><img src="https://www.paypalobjects.com/webstatic/icon/pp258.png"></div></div>
         <div class="pm-item" data-method="applepay"><div class="pm-left"><div class="pm-radio"></div><div class="pm-name">Apple Pay</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg"></div></div>
-        <div class="pm-item" data-method="balance"><div class="pm-left"><div class="pm-radio"></div><div class="pm-name">TikTok Balance</div></div><div class="pm-right"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"></div></div>
       </div>
       <div class="pm-footer"><div class="pm-total" id="totalText">Total: US$0.00</div><button class="pm-pay" onclick="doPay()">Confirm</button></div>
     </div>
   </div>
 
-  <!-- Loading & Success (hidden on load via inline style) -->
+  <!-- Loading & Success -->
   <div class="loading-modal" id="loadingModal" style="display:none"><div class="spinner"></div></div>
   <div class="final-modal" id="finalModal" style="display:none">
     <div class="final-card">
@@ -191,7 +188,6 @@
   let selectedCoins = 0;
   let selectedUsd = 0;
 
-  // hide modals on load, just in case
   document.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('loadingModal').style.display='none';
     document.getElementById('finalModal').style.display='none';
@@ -199,27 +195,27 @@
     document.getElementById('qtySheet').style.display='none';
   });
 
-  // select packages
+  // package select
   document.querySelectorAll('.package').forEach(p=>{
-    p.onclick = ()=>{
-      if(p.id==='customBtn') return;
+    p.addEventListener('click',(ev)=>{
+      if(p.id==='customBtn'){ ev.stopPropagation(); document.getElementById('customBtn').dispatchEvent(new Event('openCustom')); return; }
       document.querySelectorAll('.package').forEach(x=>x.classList.remove('selected'));
       p.classList.add('selected');
       selectedCoins = parseInt(p.getAttribute('data-coins'))||0;
       selectedUsd = parseFloat(p.querySelector('.price').getAttribute('data-usd'))||0;
       document.getElementById('totalText').innerText = 'Total: US$'+selectedUsd.toFixed(2);
-    };
+    });
   });
 
-  // Custom sheet
+  // Robust custom tile open
+  const customBtn = document.getElementById('customBtn');
   const sheet = document.getElementById('qtySheet');
+  customBtn.addEventListener('openCustom', ()=>{ sheet.style.display='block'; setTimeout(()=>{ sheet.classList.add('show'); }, 0); });
+  customBtn.addEventListener('click', ()=>{ customBtn.dispatchEvent(new Event('openCustom')); });
+
+  // Custom keypad
   const qtyValue = document.getElementById('qtyValue');
   const qtyUsd = document.getElementById('qtyUsd');
-  document.getElementById('customBtn').onclick = ()=>{
-    document.querySelectorAll('.package').forEach(x=>x.classList.remove('selected'));
-    sheet.style.display='block';
-    setTimeout(()=>{ sheet.classList.add('show'); }, 0);
-  };
   function recalcPrice(){
     const coins = parseInt(qtyValue.textContent||'0')||0;
     const usd = coins * perCoin;
@@ -240,7 +236,6 @@
     document.getElementById('totalText').innerText = 'Total: US$'+selectedUsd.toFixed(2);
     sheet.classList.remove('show');
     setTimeout(()=>{ sheet.style.display='none'; }, 250);
-    // highlight custom tile
     document.querySelectorAll('.package').forEach(x=>x.classList.remove('selected'));
     document.getElementById('customBtn').classList.add('selected');
   };
@@ -248,23 +243,16 @@
 
   // payment modal
   document.querySelectorAll('.pm-item').forEach(item=>{
-    item.onclick=()=>{
-      document.querySelectorAll('.pm-item').forEach(i=>i.classList.remove('active'));
-      item.classList.add('active');
-    };
+    item.onclick=()=>{ document.querySelectorAll('.pm-item').forEach(i=>i.classList.remove('active')); item.classList.add('active'); };
   });
-  document.getElementById('payButton').onclick = ()=>{
-    if(selectedCoins>0){ document.getElementById('pmModal').style.display='block'; }
-    else alert('Please select a package');
-  };
+  document.getElementById('payButton').onclick = ()=>{ if(selectedCoins>0){ document.getElementById('pmModal').style.display='block'; } else alert('Please select a package'); };
   function closePm(){ document.getElementById('pmModal').style.display='none'; }
 
-  // main pay flow
+  // main pay flow (NO balance increase)
   function doPay(){
     closePm();
     const loading = document.getElementById('loadingModal');
     const finalM = document.getElementById('finalModal');
-    // hide both to be safe
     finalM.style.display='none';
     loading.style.display='flex';
     setTimeout(()=>{
@@ -272,11 +260,7 @@
       const details = document.getElementById('finalDetails');
       details.innerHTML = 'You purchased <b>'+selectedCoins.toLocaleString()+' coins</b><br>Amount: <b>US$'+selectedUsd.toFixed(2)+'</b><br>Your coins will be added to your account within 24h.';
       finalM.style.display='flex';
-      // update balance
-      const balanceEl = document.getElementById('balanceText');
-      const cur = parseInt(balanceEl.innerText.replace(/,/g,''));
-      balanceEl.innerText = (cur + selectedCoins).toLocaleString();
-      // auto-close after 5s
+      // NOTE: do not alter balance per user's request
       setTimeout(()=>{ closeFinal(); }, 5000);
     }, 3000);
   }
