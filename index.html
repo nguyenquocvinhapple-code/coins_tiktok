@@ -28,12 +28,13 @@
     .field input{width:100%;padding:10px;font-size:14px;border:1px solid #ccc;border-radius:8px}
     .field input[readonly]{background:#fafafa;cursor:pointer}
 
-    /* Payment logos: small style like icons */
-    .payment-label{font-weight:600;font-size:14px;margin-right:8px}
-    .payment-logos{display:flex;justify-content:flex-start;align-items:center;gap:8px;margin:14px 0}
-    .payment-logos img{height:24px;width:auto;background:#fff;border:1px solid #ddd;border-radius:6px;padding:2px 4px;flex:0 0 auto;}
+    /* Payment logos small + label */
+    .pmethod-wrap{display:flex;align-items:center;gap:8px;margin:14px 0;justify-content:flex-start}
+    .payment-label{font-weight:600;font-size:14px;margin-right:2px}
+    .payment-logos{display:flex;gap:8px;align-items:center;justify-content:flex-start}
+    .payment-logos img{height:24px;width:auto;background:#fff;border:1px solid #ddd;border-radius:6px;padding:2px 4px;flex:0 0 auto}
 
-    .btn{margin-top:6px;width:100%;background:var(--tk-red);color:#fff;border:0;border-radius:10px;padding:12px;font-size:16px;font-weight:700;cursor:pointer}
+    .btn{margin-top:6px;width:100%;background:#FE2C55;color:#fff;border:0;border-radius:10px;padding:12px;font-size:16px;font-weight:700;cursor:pointer}
 
     .last-purchase{display:none;margin-top:10px;font-size:14px;color:#333;background:#f8f8f8;border:1px solid #eee;border-radius:10px;padding:10px;text-align:left}
 
@@ -45,14 +46,55 @@
     .pm-close{background:transparent;border:0;font-size:22px;cursor:pointer}
     .pm-list{margin:16px 0;display:flex;flex-direction:column;gap:10px}
     .pm-item{display:flex;justify-content:space-between;align-items:center;border:1px solid #ddd;border-radius:12px;padding:12px;cursor:pointer;background:#fff}
-    .pm-item.active{border-color:var(--tk-red);box-shadow:0 0 0 2px rgba(254,44,85,.18)}
+    .pm-item.active{border-color:#FE2C55;box-shadow:0 0 0 2px rgba(254,44,85,.18)}
     .pm-left{display:flex;align-items:center;gap:10px}
     .pm-radio{width:18px;height:18px;border-radius:50%;border:2px solid #bbb;position:relative}
-    .pm-item.active .pm-radio{border-color:var(--tk-red)}
-    .pm-item.active .pm-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--tk-red)}
+    .pm-item.active .pm-radio{border-color:#FE2C55}
+    .pm-item.active .pm-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#FE2C55}
     .pm-name{font-weight:600}
     .pm-right{display:flex;gap:10px;align-items:center}
     .pm-right img{height:22px;width:auto;object-fit:contain;flex:0 0 auto}
+
+    .pm-card{display:none;margin-top:12px;border:1px dashed #ccc;border-radius:10px;padding:12px;background:#fafafa}
+    .pm-card .vcard{background:linear-gradient(135deg,#FE2C55,#25F4EE);color:#fff;border-radius:12px;padding:14px;display:flex;justify-content:center;font-weight:700}
+    .pm-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+    .pm-total{font-weight:700}
+    .pm-pay{background:#FE2C55;color:#fff;border:0;border-radius:999px;padding:12px 20px;font-weight:700;cursor:pointer}
+
+    /* Loading */
+    .loading-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200;display:flex;align-items:center;justify-content:center}
+    .spinner{width:48px;height:48px;border:5px solid #f3f3f3;border-top:5px solid #FE2C55;border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Success */
+    .final-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1300;display:flex;align-items:center;justify-content:center}
+    .final-card{background:#fff;border-radius:20px;padding:20px;width:320px;height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.15);text-align:center}
+    .final-close{position:absolute;right:10px;top:8px;background:transparent;border:0;font-size:22px;cursor:pointer}
+    .check{width:56px;height:56px;border-radius:16px;background:#2ecc71;position:relative;margin-bottom:8px}
+    .check::after{content:"";position:absolute;left:18px;top:13px;width:20px;height:12px;border:4px solid #fff;border-top:none;border-right:none;transform:rotate(-45deg)}
+    .final-title{margin:6px 0 4px 0;font-size:18px;font-weight:800}
+    .final-details{margin-top:4px;font-size:15px;color:#333}
+    .final-details b{font-weight:800}
+
+    /* Keypad overlay (smooth) */
+    .qty-sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,.0);z-index:1200;transition:background .25s ease}
+    .qty-sheet.show{background:rgba(0,0,0,.45)}
+    .qty-panel{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top-left-radius:16px;border-top-right-radius:16px;padding:14px 16px 18px;box-shadow:0 -8px 30px rgba(0,0,0,.15);transform:translateY(100%);transition:transform .25s ease}
+    .qty-sheet.show .qty-panel{transform:translateY(0)}
+    .qty-handle{width:44px;height:5px;background:#ddd;border-radius:999px;margin:0 auto 10px}
+    .qty-title{font-weight:700;margin:0 0 10px 0;text-align:center}
+    .qty-range{display:flex;align-items:center;gap:6px;color:#999;font-size:13px;margin-bottom:8px}
+    .qty-range img{width:18px}
+    .qty-display{width:100%;border:1px solid #ececec;border-radius:10px;padding:12px;text-align:left;font-weight:700;font-size:16px;color:#333;background:#fff}
+    .qty-keypad{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .qty-key{padding:14px 0;background:#f3f3f5;border-radius:10px;font-weight:700;font-size:18px;box-shadow:inset 0 -1px 0 #ececec;user-select:none;text-align:center}
+    .qty-key:active{transform:scale(.98);background:#e8e8ec}
+    .qty-key.gray{background:#ececec}
+    .qty-row{margin-top:10px;display:flex;justify-content:space-between;align-items:center}
+    .qty-note{color:#e91e63;font-weight:600;font-size:14px}
+    .qty-total{font-weight:700}
+    .qty-paybar{display:flex;gap:10px;margin-top:8px}
+    .qty-paybtn{flex:1;background:#FE2C55;color:#fff;border:0;border-radius:999px;padding:12px 10px;font-weight:700;text-align:center}
   </style>
 </head>
 <body>
@@ -61,17 +103,17 @@
     <div class="divider"></div>
     <h1>Buy Coins</h1>
 
-    <!-- Packages -->
+    <!-- Packages (coins only; prices computed by RATE) -->
     <div class="package-list" id="pkgList">
-      <div class="package"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>350</span></div><div class="price">US$4,95</div></div>
-      <div class="package"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>700</span></div><div class="price">US$9,90</div></div>
-      <div class="package"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>1400</span></div><div class="price">US$19,80</div></div>
-      <div class="package"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>3500</span></div><div class="price">US$49,50</div></div>
-      <div class="package"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>7000</span></div><div class="price">US$99,00</div></div>
-      <div class="package"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>17500</span></div><div class="price">US$247,50</div></div>
-      <div class="package"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>50000</span></div><div class="price">US$707,14</div></div>
-      <div class="package"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>100000</span></div><div class="price">US$1414,29</div></div>
-      <div class="package"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>300000</span></div><div class="price">US$4242,86</div></div>
+      <div class="package" data-coins="350"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>350</span></div><div class="price"></div></div>
+      <div class="package" data-coins="700"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>700</span></div><div class="price"></div></div>
+      <div class="package" data-coins="1400"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>1,400</span></div><div class="price"></div></div>
+      <div class="package" data-coins="3500"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>3,500</span></div><div class="price"></div></div>
+      <div class="package" data-coins="7000"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>7,000</span></div><div class="price"></div></div>
+      <div class="package" data-coins="17500"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>17,500</span></div><div class="price"></div></div>
+      <div class="package" data-coins="50000"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>50,000</span></div><div class="price"></div></div>
+      <div class="package" data-coins="100000"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>100,000</span></div><div class="price"></div></div>
+      <div class="package" data-coins="300000"><div class="coin"><img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png"><span>300,000</span></div><div class="price"></div></div>
     </div>
 
     <div class="field">
@@ -81,16 +123,18 @@
 
     <div class="field">
       <label for="coinAmountBtn">Coin amount (custom)</label>
-      <input id="coinAmountBtn" type="text" placeholder="Tap to enter…" readonly>
+      <input id="coinAmountBtn" type="text" placeholder="Tap to enter…" readonly onclick="openQtySheet()">
     </div>
 
-    <!-- Logos row (small icons) with label -->
-    <div class="payment-logos">
+    <!-- Label + Logos (small, left) -->
+    <div class="pmethod-wrap">
       <span class="payment-label">Payment method</span>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
-      <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
-      <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
+      <div class="payment-logos">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
+        <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY QR">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+        <img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg" alt="Apple Pay">
+      </div>
     </div>
 
     <button class="btn" onclick="openPM()">Pay</button>
@@ -105,18 +149,193 @@
         <button class="pm-close" onclick="closePM()">×</button>
       </div>
       <div class="pm-list">
-        <div class="pm-item"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Visa</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div></div>
-        <div class="pm-item"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">VNPAY QR</div></div><div class="pm-right"><img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png"></div></div>
-        <div class="pm-item"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">PayPal</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"></div></div>
-        <div class="pm-item"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Apple Pay</div></div><div class="pm-right"><img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg"></div></div>
+        <div class="pm-item" data-method="visa"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Visa</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div></div>
+        <div class="pm-item" data-method="vnpay"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">VNPAY QR</div></div><div class="pm-right"><img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png"></div></div>
+        <div class="pm-item" data-method="paypal"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">PayPal</div></div><div class="pm-right"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"></div></div>
+        <div class="pm-item" data-method="applepay"><div class="pm-left"><span class="pm-radio"></span><div class="pm-name">Apple Pay</div></div><div class="pm-right"><img src="https://www.logo.wine/a/logo/Apple_Pay/Apple_Pay-Logo.wine.svg"></div></div>
+      </div>
+
+      <div class="pm-card" id="pmCardBox">
+        <div class="vcard">Visa Card</div>
+      </div>
+
+      <div class="pm-footer">
+        <div class="pm-total" id="pmTotal">Total: US$0,00</div>
+        <button class="pm-pay" onclick="doPay()">Pay now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Modal (spinner first) -->
+  <div class="loading-modal" id="loadingModal" style="display:none;">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Success modal -->
+  <div class="final-modal" id="finalModal" style="display:none;">
+    <div class="final-card">
+      <button class="final-close" onclick="closeFinal()">×</button>
+      <div class="check"></div>
+      <h3 class="final-title">Purchase completed</h3>
+      <div class="final-details" id="finalDetails">You bought <b>0</b> coins for <b>US$0,00</b>.</div>
+    </div>
+  </div>
+
+  <!-- Quantity keypad sheet -->
+  <div class="qty-sheet" id="qtySheet" onclick="if(event.target===this) closeQtySheet()">
+    <div class="qty-panel">
+      <div class="qty-handle"></div>
+      <div class="qty-title">Custom amount</div>
+      <div class="qty-range">
+        <img src="https://cdn.unipin.com/images/icon_product_pages/1749042852-icon-Tiktok.png" alt="">
+        <span>0 – 2,500,000</span>
+      </div>
+      <div class="qty-display" id="qtyDisplay">0</div>
+      <div class="qty-keypad" id="qtyPad">
+        <div class="qty-key">1</div><div class="qty-key">2</div><div class="qty-key">3</div>
+        <div class="qty-key">4</div><div class="qty-key">5</div><div class="qty-key">6</div>
+        <div class="qty-key">7</div><div class="qty-key">8</div><div class="qty-key">9</div>
+        <div class="qty-key gray" data-act="back">⌫</div><div class="qty-key">000</div><div class="qty-key">0</div>
+      </div>
+      <div class="qty-row">
+        <div class="qty-note">Get 5% bonus on larger packs</div>
+        <div class="qty-total" id="qtyTotal">US$0,00</div>
+      </div>
+      <div class="qty-paybar">
+        <div class="qty-paybtn" onclick="applyQty()">Apply</div>
       </div>
     </div>
   </div>
 
   <script>
-    const pmModal=document.getElementById('pmModal');
-    function openPM(){pmModal.style.display='block';}
-    function closePM(){pmModal.style.display='none';}
+    // ===== Helpers: ALL COMMAS =====
+    const RATE = 0.014142857142857143; // 70 coins = 0,99 USD
+    function fmtNum(n){ return (Number(n)||0).toLocaleString('en-US').replace(/\./g,','); }
+    function fmtUSD(n){ return 'US$' + (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}).replace(/\./g,','); }
+
+    // Render package labels & prices using RATE
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.package').forEach(pkg => {
+        const coins = parseInt(pkg.dataset.coins, 10) || 0;
+        pkg.querySelector('.coin span').textContent = fmtNum(coins);
+        const price = coins * RATE;
+        pkg.querySelector('.price').textContent = fmtUSD(price);
+      });
+    });
+
+    // ===== Package select =====
+    const packages = document.querySelectorAll('.package');
+    const pmTotal = document.getElementById('pmTotal');
+    const lastPurchase = document.getElementById('lastPurchase');
+    const coinAmountBtn = document.getElementById('coinAmountBtn');
+    let selectedAmount = 0;
+    let selectedCoins = 0;
+
+    packages.forEach(pkg=>{
+      pkg.addEventListener('click',()=>{
+        packages.forEach(p=>p.classList.remove('selected'));
+        pkg.classList.add('selected');
+        selectedCoins = parseInt(pkg.dataset.coins)||0;
+        selectedAmount = selectedCoins * RATE;
+        // sync custom field
+        coinAmountBtn.value = selectedCoins ? (fmtNum(selectedCoins) + ' coins') : '';
+        // update total
+        pmTotal.textContent = 'Total: ' + fmtUSD(selectedAmount);
+      });
+    });
+
+    // ===== Payment Modal =====
+    const pmModal = document.getElementById('pmModal');
+    const pmItems = document.querySelectorAll('.pm-item');
+    const pmCardBox = document.getElementById('pmCardBox');
+
+    function openPM(){
+      pmModal.style.display='block';
+      // default select Visa
+      pmItems.forEach(i=>i.classList.remove('active'));
+      const visa = document.querySelector('.pm-item[data-method="visa"]');
+      if(visa){ visa.classList.add('active'); pmCardBox.style.display='block'; }
+    }
+    function closePM(){
+      pmModal.style.display='none';
+      pmCardBox.style.display='none';
+      pmItems.forEach(i=>i.classList.remove('active'));
+    }
+    pmItems.forEach(item=>{
+      item.addEventListener('click', ()=>{
+        pmItems.forEach(i=>i.classList.remove('active'));
+        item.classList.add('active');
+        pmCardBox.style.display = item.dataset.method==='visa' ? 'block' : 'none';
+      });
+    });
+
+    // ===== Loading -> Success flow (1.5s) =====
+    const loadingModal = document.getElementById('loadingModal');
+    const finalModal = document.getElementById('finalModal');
+    function doPay(){
+      pmModal.style.display='none';
+      loadingModal.style.display='flex';
+      setTimeout(()=>{
+        loadingModal.style.display='none';
+        document.getElementById('finalDetails').innerHTML =
+          'You bought <b>' + fmtNum(selectedCoins) + '</b> coins for <b>' + fmtUSD(selectedAmount) + '</b>.';
+        lastPurchase.style.display='block';
+        lastPurchase.textContent = 'Last purchase: ' + fmtNum(selectedCoins) + ' coins – ' + fmtUSD(selectedAmount);
+        finalModal.style.display='flex';
+      },1500);
+    }
+    function closeFinal(){ finalModal.style.display='none'; }
+
+    // ===== Quantity keypad sheet (MIN=0) smooth slide =====
+    const COIN_MIN = 0, COIN_MAX = 2500000;
+    const qtySheet = document.getElementById('qtySheet');
+    const qtyDisplay = document.getElementById('qtyDisplay');
+    const qtyTotal = document.getElementById('qtyTotal');
+    const qtyPad = document.getElementById('qtyPad');
+
+    function openQtySheet(){
+      qtySheet.style.display = 'block';
+      requestAnimationFrame(()=> qtySheet.classList.add('show'));
+      const cur = selectedCoins || 0;
+      qtyDisplay.textContent = fmtNum(cur);
+      qtyTotal.textContent = fmtUSD(cur * RATE);
+    }
+    function closeQtySheet(){
+      qtySheet.classList.remove('show');
+      setTimeout(()=>{ qtySheet.style.display='none'; }, 250);
+    }
+
+    qtyPad.addEventListener('click', (e)=>{
+      const key = e.target.closest('.qty-key');
+      if(!key) return;
+      let raw = qtyDisplay.textContent.replace(/,/g,'');
+      let val = parseInt(raw||'0',10);
+      const txt = key.textContent.trim();
+      const act = key.dataset.act;
+
+      if(act === 'back'){ val = Math.floor(val/10); }
+      else if(txt === '000'){ val = Number(String(val||'0') + '000'); }
+      else { val = Number(String(val||'') + txt); }
+
+      if(val>COIN_MAX) val = COIN_MAX;
+
+      qtyDisplay.textContent = fmtNum(val);
+      qtyTotal.textContent = fmtUSD(val * RATE);
+    });
+
+    function applyQty(){
+      const raw = qtyDisplay.textContent.replace(/,/g,'');
+      const val = parseInt(raw,10) || 0;
+      selectedCoins = val;
+      selectedAmount = val * RATE;
+      coinAmountBtn.value = val ? (fmtNum(val) + ' coins') : '';
+      pmTotal.textContent = 'Total: ' + fmtUSD(selectedAmount);
+      // clear package selection (custom mode)
+      packages.forEach(p=>p.classList.remove('selected'));
+      closeQtySheet();
+      // open payment modal immediately
+      openPM();
+    }
   </script>
 </body>
 </html>
