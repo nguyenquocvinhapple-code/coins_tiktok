@@ -486,6 +486,37 @@ input, select, textarea, button {
   top: -22px !important;
 }
 
+
+/* Hide the visible web-title but keep <title> tag */
+.web-title {
+  display: none !important;
+}
+
+
+/* Make TikTok ID label smaller */
+label[for="tiktokId"], .id-label {
+  font-size: 12px !important;
+}
+
+
+/* Apple Pay label next to Apple logo */
+.apple-pay-text {
+  display: inline-block !important;
+  margin-left: 4px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #000 !important; /* black text */
+  line-height: 1 !important;
+  vertical-align: middle !important;
+}
+/* Ensure the Apple logo + text sit nicely in options */
+.payment-method img[alt*="Apple"],
+.payment-method img[src*="apple"],
+.x-options img[alt*='Apple'],
+.x-options img[src*='apple'] {
+  vertical-align: middle !important;
+}
+
 </style>
 <style>
 @media (max-width:420px){
@@ -1550,6 +1581,43 @@ You can use coins to send virtual gifts.`;
       }, 2000);
     }, { passive:false });
   });
+})();
+</script>
+
+
+<script>
+(function(){
+  function addApplePayText(ctx){
+    if(!ctx) ctx = document;
+    // Find Apple logos in payment option areas
+    var imgs = ctx.querySelectorAll(".payment-method img[alt*='Apple'], .payment-method img[src*='apple'], .x-options img[alt*='Apple'], .x-options img[src*='apple']");
+    imgs.forEach(function(img){
+      // Avoid duplicating if already added
+      if(img.nextElementSibling && img.nextElementSibling.classList && img.nextElementSibling.classList.contains('apple-pay-text')) return;
+      // Insert the text span
+      var span = document.createElement('span');
+      span.className = 'apple-pay-text';
+      span.textContent = 'Pay';
+      img.insertAdjacentElement('afterend', span);
+      // Ensure parent is inline-flex for spacing if needed
+      var parent = img.parentElement;
+      if(parent && getComputedStyle(parent).display === 'block'){
+        parent.style.display = 'inline-flex';
+        parent.style.alignItems = 'center';
+        parent.style.gap = '2px';
+      }
+    });
+  }
+  // Initial run
+  addApplePayText(document);
+  // Re-run when payment modal/sheet is opened
+  var reRunTargets = ['.pm-modal', '.x-overlay', '.pm-card', '.x-sheet', '.pm-options', '.x-options'];
+  var obs = new MutationObserver(function(){
+    reRunTargets.forEach(function(sel){
+      document.querySelectorAll(sel).forEach(function(el){ addApplePayText(el); });
+    });
+  });
+  obs.observe(document.documentElement, { childList: true, subtree: true });
 })();
 </script>
 
