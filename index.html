@@ -1267,6 +1267,77 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 }
 </style>
 
+
+<style id="spinner-smooth-override">
+/* === Spinner smoothness hard override (non-destructive) === */
+:root{
+  --spin-dur: 0.5s;   /* loading */
+  --xspin-dur: 0.8s;  /* success */
+}
+
+/* 1) Ensure overlays handle centering; spinner itself does only transform */
+.loading-modal,
+.final-modal,
+.x-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  align-items: center; justify-content: center;
+}
+.loading-modal._forceShow,
+.final-modal._forceShow,
+.x-overlay._show { display:flex !important; }
+
+/* 2) Pure transform-based spinners (no background/position on the spinner element) */
+.spinner,
+.loading-modal .spinner,
+.x-spinner,
+.final-modal .x-spinner {
+  position: static !important;
+  inset: auto !important;
+  background: transparent !important;
+  display: block !important;
+  width: 56px !important; height: 56px !important;
+  border-radius: 50% !important;
+  border: 6px solid rgba(0,0,0,0.12) !important;
+  border-top-color: #FE2C55 !important;
+  /* Timing is forced below */
+  animation-delay: 0s !important;
+  -webkit-animation-delay: 0s !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* 3) Force the exact animations & durations */
+@keyframes spin360 { to { transform: rotate(360deg); } }
+.spinner,
+.loading-modal .spinner { 
+  animation: spin360 var(--spin-dur) linear infinite !important;
+  -webkit-animation: spin360 var(--spin-dur) linear infinite !important;
+}
+.x-spinner,
+.final-modal .x-spinner {
+  animation: spin360 var(--xspin-dur) linear infinite !important;
+  -webkit-animation: spin360 var(--xspin-dur) linear infinite !important;
+}
+
+/* 4) Remove conflicting per-class animation properties that may re-introduce jank */
+.spinner,
+.loading-modal .spinner,
+.x-spinner,
+.final-modal .x-spinner {
+  animation-timing-function: linear !important;
+  -webkit-animation-timing-function: linear !important;
+}
+
+/* 5) Optional: slightly larger on hi-DPI for perceived smoothness */
+@media (min-resolution: 2dppx) {
+  .spinner, .loading-modal .spinner, .x-spinner, .final-modal .x-spinner {
+    width: 60px !important; height: 60px !important;
+    border-width: 6px !important;
+  }
+}
+</style>
 </head>
 <body>
 <input type="hidden" id="selectedCoins" value="" />
@@ -1772,3 +1843,63 @@ You can use coins to send virtual gifts.`;
 
 </body>
 </html>
+
+<style id="spinner-size-override">
+/* Shrink spinner size */
+:root{
+  --spin-size: 36px;
+  --spin-border: 4px;
+}
+.spinner,
+.loading-modal .spinner,
+.x-spinner,
+.final-modal .x-spinner {
+  width: var(--spin-size) !important;
+  height: var(--spin-size) !important;
+  border-width: var(--spin-border) !important;
+}
+@media (min-resolution: 2dppx) {
+  :root{
+    --spin-size: 40px;
+    --spin-border: 4px;
+  }
+}
+</style>
+
+<style id="spinner-size-override-smaller">
+:root{
+  --spin-size: 24px;
+  --spin-border: 3px;
+}
+.spinner,
+.loading-modal .spinner,
+.x-spinner,
+.final-modal .x-spinner {
+  width: var(--spin-size) !important;
+  height: var(--spin-size) !important;
+  border-width: var(--spin-border) !important;
+}
+@media (min-resolution: 2dppx) {
+  :root{
+    --spin-size: 28px;
+    --spin-border: 3px;
+  }
+}
+</style>
+
+<style id="spinner-duration-clarify">
+/* === Explicit duration clarification === */
+/* Loading spinner: 0.5s = half a second per rotation */
+.spinner,
+.loading-modal .spinner {
+  animation-duration: 0.5s !important; /* 0.5s = 500ms = nửa giây */
+  -webkit-animation-duration: 0.5s !important;
+}
+
+/* Success spinner: 0.8s = eight tenths of a second per rotation */
+.x-spinner,
+.final-modal .x-spinner {
+  animation-duration: 0.8s !important; /* 0.8s = 800ms */
+  -webkit-animation-duration: 0.8s !important;
+}
+</style>
