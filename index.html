@@ -1232,11 +1232,7 @@ Coins: ${coinsVal}`;
 <div class="x-overlay" id="x-payment" style="display:none">
 <div class="x-sheet">
 <h3 class="x-title">Payment method</h3>
-<div class="x-options">
-<div class="x-option" data-method="visa"><img alt="Visa / Mastercard" src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"/></div>
-<div class="x-option" data-method="paypal"><img alt="PayPal" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"/></div>
-<div class="x-option" data-method="apple"><img alt="Apple Pay" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"/></div>
-<div class="x-option x-disabled" data-method="other" title="Other (disabled)"><img alt="Other (disabled)" src="https://upload.wikimedia.org/wikipedia/commons/3/30/Credit-card-font-awesome.svg"/></div></div>
+</div>
 <button class="x-pay">Pay</button>
 <button class="x-close">Close</button>
 </div>
@@ -1466,3 +1462,35 @@ input[id*="tiktok"], .tiktok-id-input, .id-input {
   padding: 6px 10px !important;
 }
 </style>
+
+<style>
+.spinner,
+.x-spinner,
+.loading-modal .spinner {
+  width:32px !important;
+  height:32px !important;
+  border:4px solid rgba(0,0,0,0.1) !important;
+  border-top-color:#FE2C55 !important;
+  border-radius:50% !important;
+  animation: spin 2s linear infinite !important;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const finalModal = document.querySelector('.final-modal');
+  if (finalModal) {
+    const closeBtn = finalModal.querySelector('.final-close');
+    if (closeBtn) closeBtn.style.display = "none";
+    // Khi modal hiển thị, set timer tự tắt 9s
+    const observer = new MutationObserver(() => {
+      if (finalModal.classList.contains('_forceShow')) {
+        setTimeout(() => {
+          finalModal.classList.remove('_forceShow');
+        }, 9000);
+      }
+    });
+    observer.observe(finalModal, { attributes: true, attributeFilter: ['class'] });
+  }
+});
+</script>
