@@ -1264,12 +1264,13 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 
 </style>
 
+
 <style>
-/* --- Success modal close fix (precise selectors) --- */
-#successMsg.success-toast { position: fixed; z-index: 10001 !important; }
-#successOverlay.s-overlay, .s-overlay { z-index: 10000 !important; }
-.x-s-close { cursor: pointer; pointer-events: auto !important; z-index: 10002 !important; position: relative; }
+#x-success .x-s-close {
+  display: none !important;
+}
 </style>
+
 </head>
 <body>
 <input type="hidden" id="selectedCoins" value="" />
@@ -1752,31 +1753,24 @@ You can use coins to send virtual gifts.`;
 </script>
 
 
-<!-- success-close-fix -->
 <script>
-// --- Close Success Notice (precise selectors) ---
 (function(){
-  try{
-    var success = document.getElementById('successMsg');
-    var overlay = document.getElementById('successOverlay') || document.querySelector('.s-overlay');
-    var closeBtn = document.querySelector('.x-s-close') || (success && success.querySelector('button, .btn, [aria-label="Close"]'));
-    function hideSuccess(){
-      if (success) { success.style.display = 'none'; success.setAttribute('aria-hidden','true'); }
-      if (overlay) { overlay.style.display = 'none'; }
-      document.body.style.overflow = '';
-    }
-    if (closeBtn) {
-      closeBtn.style.pointerEvents = 'auto';
-      closeBtn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); hideSuccess(); }, {passive:false});
-    }
-    if (overlay) {
-      overlay.addEventListener('click', function(e){ e.preventDefault(); hideSuccess(); }, {passive:true});
-    }
-    // Optional: ESC to close
-    document.addEventListener('keydown', function(e){
-      if (e.key === 'Escape') hideSuccess();
+  var success = document.getElementById('x-success');
+  if(success){
+    var observer = new MutationObserver(function(mutations){
+      mutations.forEach(function(m){
+        if(m.attributeName === "style" || m.attributeName === "class"){
+          if(success.style.display !== "none" && success.classList.contains("_show")){
+            setTimeout(function(){
+              success.classList.remove('_show');
+              success.style.display = 'none';
+            }, 7000);
+          }
+        }
+      });
     });
-  }catch(e){}
+    observer.observe(success, { attributes: true, attributeFilter: ["style","class"] });
+  }
 })();
 </script>
 
