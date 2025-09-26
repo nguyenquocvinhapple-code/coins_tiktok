@@ -1265,21 +1265,10 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 </style>
 
 <style>
-/* ---- Fix: ensure success modal close button is clickable ---- */
-.success-modal, .success-notice, #successModal {
-  position: fixed;
-}
-.success-close, .success__close, .modal-close, #successClose {
-  cursor: pointer;
-  pointer-events: auto !important;
-  z-index: 10002 !important;
-}
-.success-overlay, .modal-overlay, #successOverlay {
-  z-index: 10000 !important;
-}
-#successModal, .success-modal, .success-notice {
-  z-index: 10001 !important;
-}
+/* --- Success modal close fix (precise selectors) --- */
+#successMsg.success-toast { position: fixed; z-index: 10001 !important; }
+#successOverlay.s-overlay, .s-overlay { z-index: 10000 !important; }
+.x-s-close { cursor: pointer; pointer-events: auto !important; z-index: 10002 !important; position: relative; }
 </style>
 </head>
 <body>
@@ -1762,39 +1751,34 @@ You can use coins to send virtual gifts.`;
 })();
 </script>
 
+
+<!-- success-close-fix -->
 <script>
-// ---- Fix: wire up close button & overlay for success modal ----
-(function() {
-  try {
-    var modal = document.getElementById('successModal') || document.querySelector('.success-modal, .success-notice');
-    var closeBtn = document.getElementById('successClose') || document.querySelector('.success-close, .success__close, .modal-close');
-    var overlay = document.getElementById('successOverlay') || document.querySelector('.success-overlay, .modal-overlay');
-    function hideModal() {
-      if (!modal) return;
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden', 'true');
-      if (overlay) overlay.style.display = 'none';
+// --- Close Success Notice (precise selectors) ---
+(function(){
+  try{
+    var success = document.getElementById('successMsg');
+    var overlay = document.getElementById('successOverlay') || document.querySelector('.s-overlay');
+    var closeBtn = document.querySelector('.x-s-close') || (success && success.querySelector('button, .btn, [aria-label="Close"]'));
+    function hideSuccess(){
+      if (success) { success.style.display = 'none'; success.setAttribute('aria-hidden','true'); }
+      if (overlay) { overlay.style.display = 'none'; }
       document.body.style.overflow = '';
     }
     if (closeBtn) {
-      closeBtn.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        hideModal();
-      }, { passive: false });
+      closeBtn.style.pointerEvents = 'auto';
+      closeBtn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); hideSuccess(); }, {passive:false});
     }
     if (overlay) {
-      overlay.addEventListener('click', function(e){
-        e.preventDefault();
-        hideModal();
-      }, { passive: true });
+      overlay.addEventListener('click', function(e){ e.preventDefault(); hideSuccess(); }, {passive:true});
     }
-    // Make sure clicks reach the close button
-    if (closeBtn) {
-      closeBtn.style.pointerEvents = 'auto';
-    }
-  } catch(e) { /* noop */ }
+    // Optional: ESC to close
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') hideSuccess();
+    });
+  }catch(e){}
 })();
 </script>
+
 </body>
 </html>
