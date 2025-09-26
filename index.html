@@ -774,6 +774,48 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 }
 </style>
 
+
+<style>
+/* Center the loading spinner perfectly when visible */
+.loading-modal._forceShow {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+/* Fallback: if spinner element exists, size it nicely */
+.loading-modal .spinner, 
+.loading-modal .loading, 
+.loading-modal .loader {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 6px solid rgba(0,0,0,0.1);
+  border-top-color: #FE2C55;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+
+<style>
+.pm-modal._forceShow { 
+  display: block !important; 
+  visibility: visible !important; 
+  opacity: 1 !important; 
+}
+</style>
+
+
+<style>
+.final-card { padding:16px; text-align:center; }
+.final-title { font-weight:800; margin-bottom:8px; font-size:18px; }
+.final-message { font-size:14px; color:#333; margin-top:4px; white-space:pre-line; }
+.pm-options .pay-option.selected { outline:2px solid #FE2C55; }
+.loading-modal._forceShow { display:flex !important; align-items:center !important; justify-content:center !important; }
+</style>
+
 </head>
 <body>
 <input type="hidden" id="selectedCoins" value="" />
@@ -1306,7 +1348,7 @@ document.addEventListener('DOMContentLoaded', function(){
         t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='8px';
         t.style.fontSize='14px'; t.style.zIndex='9999'; t.style.boxShadow='0 6px 20px rgba(0,0,0,.15)';
         document.body.appendChild(t);
-        setTimeout(()=>{ t.remove(); }, 1500);
+        setTimeout(()=>{ t.remove(); }, 1000);
         return;
       }
       // show outer spinner for 1.5s, then open payment modal
@@ -1314,7 +1356,7 @@ document.addEventListener('DOMContentLoaded', function(){
       setTimeout(function(){
         if(loadingModal){ loadingModal.classList.remove('_forceShow'); loadingModal.style.display = 'none'; }
         if(paymentModal){ paymentModal.classList.add('_forceShow'); paymentModal.style.display = 'block'; }
-      }, 1500);
+      }, 1000);
     });
   });
 
@@ -1508,7 +1550,7 @@ document.addEventListener('DOMContentLoaded', function(){
         t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='6px';
         t.style.fontSize='14px'; t.style.zIndex='9999'; t.style.boxShadow='0 6px 20px rgba(0,0,0,.15)';
         document.body.appendChild(t);
-        setTimeout(()=>{ t.remove(); }, 1500);
+        setTimeout(()=>{ t.remove(); }, 1000);
         return;
       }
 
@@ -1517,7 +1559,7 @@ document.addEventListener('DOMContentLoaded', function(){
       setTimeout(function(){
         if(loadingModal) hide(loadingModal);
         if(paymentModal) show(paymentModal);
-      }, 1500);
+      }, 1000);
     }
 
     // Attach on capture to preempt other handlers
@@ -1545,6 +1587,73 @@ document.addEventListener('DOMContentLoaded', function(){
     if (successClose){ successClose.addEventListener('click', function(){ hide(successModal); }); }
   });
 })();
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  function q(sel, ctx){ return (ctx||document).querySelector(sel); }
+  function qa(sel, ctx){ return (ctx||document).querySelectorAll(sel); }
+  function show(el){ if(!el) return; el.classList.add('_forceShow'); el.style.display = (el.classList.contains('pm-modal')||el.classList.contains('loading-modal')||el.classList.contains('final-modal')) ? 'flex':'block'; }
+  function hide(el){ if(!el) return; el.classList.remove('_forceShow'); el.style.display = 'none'; }
+
+  const paymentModal = q('.pm-modal');
+  const loadingModal = q('.loading-modal');
+  const successModal = q('.final-modal');
+  const finalMsg = q('.final-message');
+  const idInp = q('#tiktokId');
+  const selectedCoins = q('#selectedCoins');
+
+  // Select payment method (look for alt text)
+  let payMethod = null;
+  qa('.pm-options .pay-option, .payment-method .pay-option').forEach(function(opt){
+    opt.addEventListener('click', function(){
+      qa('.pm-options .pay-option, .payment-method .pay-option').forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+      const img = this.querySelector('img');
+      const alt = img ? (img.alt||'').toLowerCase() : '';
+      if (alt.includes('visa') || alt.includes('mastercard')) payMethod = 'visa';
+      else if (alt.includes('paypal')) payMethod = 'paypal';
+      else if (alt.includes('apple')) payMethod = 'apple';
+      else payMethod = 'other';
+    });
+  });
+
+  // Inner Pay button: only proceed if method selected; show spinner 5s then success with details
+  qa('.pm-pay, [data-action="pay"]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      if(!payMethod){
+        // require a method selection
+        let t = document.createElement('div');
+        t.textContent = 'Please select a payment method';
+        t.style.position='fixed'; t.style.left='50%'; t.style.bottom='12%';
+        t.style.transform='translateX(-50%)'; t.style.background='#FE2C55';
+        t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='6px';
+        t.style.fontSize='14px'; t.style.zIndex='9999'; t.style.boxShadow='0 6px 20px rgba(0,0,0,.15)';
+        document.body.appendChild(t);
+        setTimeout(()=>{ t.remove(); }, 1400);
+        return;
+      }
+      hide(paymentModal);
+      show(loadingModal);
+      setTimeout(function(){
+        hide(loadingModal);
+        // Compose success message with TikTok ID + coins
+        const id = idInp && idInp.value ? idInp.value.trim() : '';
+        const coins = selectedCoins && selectedCoins.value ? selectedCoins.value : '';
+        if(finalMsg){
+          const pretty = `TikTok ID: ${id || '(not provided)'}
+Coins: ${coins || '(not selected)'}`;
+          finalMsg.textContent = pretty;
+        }
+        show(successModal);
+        // Auto close after 5s
+        setTimeout(function(){ hide(successModal); }, 5000);
+      }, 5000);
+    });
+  });
+});
 </script>
 
 </body>
