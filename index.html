@@ -1161,6 +1161,107 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
   from { transform: scale(0.8); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
 }
+
+/* Bigger, balanced 'Pay' text next to Apple logo */
+.apple-pay-text {
+  font-size: 16px !important;   /* was 14px */
+  font-weight: 700 !important;
+  letter-spacing: .2px !important;
+  line-height: 1 !important;
+}
+/* Slightly increase gap so text doesn't feel cramped */
+.payment-method img[alt*="Apple"] + .apple-pay-text,
+.payment-method img[src*="apple"] + .apple-pay-text,
+.x-options img[alt*='Apple'] + .apple-pay-text,
+.x-options img[src*='apple'] + .apple-pay-text {
+  margin-left: 6px !important;  /* from 4px -> 6px */
+}
+
+
+/* Responsive Apple Pay text size relative to Apple logo */
+.payment-method img[alt*="Apple"] + .apple-pay-text,
+.payment-method img[src*="apple"] + .apple-pay-text,
+.x-options img[alt*='Apple'] + .apple-pay-text,
+.x-options img[src*='apple'] + .apple-pay-text {
+  font-size: 0.95em !important;  /* about 95% of logo height */
+  line-height: 1 !important;
+  margin-left: 4px !important;
+  font-weight: 700 !important;
+  color: #000 !important;
+}
+
+
+/* Show CLOSE only on Success/Final modal; no auto-close */
+.final-modal .final-close,
+.final-modal .x-s-close,
+.final-modal .final-close-btn {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  background: #ff4d4f;
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+
+/* TikTok-like style for Success modal close button */
+.final-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 999px; /* pill shape */
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.final-close-btn:hover {
+  background: #e04344;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.16);
+}
+.final-close-btn:active {
+  transform: scale(0.96);
+}
+.final-close-btn:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.6);
+  outline-offset: 2px;
+}
+/* Center the button neatly inside success card if not already */
+.final-modal .final-card, .final-modal .x-card {
+  text-align: center;
+}
+
+
+/* Enlarge top-right corner logo */
+.header-logo img,
+.top-logo img,
+.logo-top-right img {
+  width: 40px !important;  /* increase from default (likely 24px-32px) */
+  height: auto !important;
+}
+
+
+/* Enlarge top-right corner logo more */
+.header-logo img,
+.top-logo img,
+.logo-top-right img {
+  width: 56px !important;
+  height: auto !important;
+}
+
 </style>
 
 </head>
@@ -1329,7 +1430,7 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 Coins: ${coinsVal}`;
 }
         showX(xSuccess);
-        setTimeout(function(){ hideX(xSuccess); },7000);
+        /* auto-close removed by request */;
       },5000);
     };
 
@@ -1537,7 +1638,7 @@ You can use coins to send virtual gifts.`;
 }
 
           showX(xSuccess);
-          setTimeout(function(){ hideX(xSuccess); }, 7000);
+          /* auto-close removed by request */;
         }, 5000);
       });
     }
@@ -1618,6 +1719,29 @@ You can use coins to send virtual gifts.`;
     });
   });
   obs.observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
+
+
+<script>
+(function(){
+  function hideEl(el){
+    if(!el) return;
+    el.style.display = 'none';
+    el.classList.remove('_forceShow','_show');
+  }
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('.final-close, .x-s-close, .final-close-btn');
+    if(!btn) return;
+    e.preventDefault(); e.stopPropagation();
+    // find the nearest success/final modal
+    var modal = btn.closest('.final-modal, .x-overlay.success, .x-success, #xSuccess');
+    if(!modal){
+      // fallback: global id
+      modal = document.getElementById('xSuccess') || document.querySelector('.final-modal');
+    }
+    hideEl(modal);
+  }, true);
 })();
 </script>
 
