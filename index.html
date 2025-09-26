@@ -847,6 +847,38 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 .final-message { font-size:14px; color:#333; white-space:pre-line; }
 </style>
 
+
+<style>
+.x-overlay{
+  position:fixed !important; inset:0 !important;
+  display:none !important;
+  align-items:center !important; justify-content:center !important;
+  background:rgba(0,0,0,.38) !important; z-index:999999 !important;
+}
+.x-overlay._show{ display:flex !important; }
+.x-spinner{
+  width:64px; height:64px; border-radius:50%;
+  border:6px solid rgba(255,255,255,.35); border-top-color:#fff;
+  animation: xspin .9s linear infinite;
+}
+@keyframes xspin { to { transform: rotate(360deg); } }
+.x-sheet, .x-card{
+  background:#fff; width:100%; max-width:520px;
+  margin:0 12px 12px; border-radius:6px; box-shadow:0 8px 30px rgba(0,0,0,.2);
+  padding:16px; text-align:center;
+}
+.x-title{ font-size:18px; font-weight:800; margin:0 0 10px; }
+.x-options{ display:flex; gap:8px; justify-content:space-between; margin:10px 0 14px; }
+.x-option{ flex:1; display:flex; align-items:center; justify-content:center; background:#f4f5f7; border-radius:6px; padding:10px; cursor:pointer; border:1px solid #eceef1; transition:box-shadow .15s,border-color .15s; }
+.x-option:hover{ box-shadow:0 2px 10px rgba(0,0,0,.07); }
+.x-option.selected{ border-color:#FE2C55; box-shadow:0 0 0 2px rgba(254,44,85,.1) inset; background:#fff1f5; }
+.x-option img{ height:32px; width:auto; object-fit:contain; }
+.x-pay{ display:block; width:100%; padding:10px; border:none; border-radius:6px; background:#FE2C55; color:#fff; font-size:16px; cursor:pointer; }
+.x-close, .x-s-close{ margin-top:8px; background:#e5e7eb; border:none; padding:8px 10px; border-radius:6px; cursor:pointer; }
+.x-success-title{ font-weight:800; font-size:18px; margin-bottom:6px; }
+.x-success-msg{ font-size:14px; color:#333; white-space:pre-line; }
+</style>
+
 </head>
 <body>
 <input type="hidden" id="selectedCoins" value="" />
@@ -1803,6 +1835,121 @@ Method: ${payMethod.toUpperCase()}`;
     });
   })();
 });
+</script>
+
+
+<!-- Robust overlays (unique IDs) -->
+<div id="x-loading" style="display:none" class="x-overlay">
+  <div class="x-spinner"></div>
+</div>
+<div id="x-payment" style="display:none" class="x-overlay">
+  <div class="x-sheet">
+    <h3 class="x-title">Payment method</h3>
+    <div class="x-options">
+      <div class="x-option" data-method="visa"><img alt="Visa / Mastercard" src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div>
+      <div class="x-option" data-method="paypal"><img alt="PayPal" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"></div>
+      <div class="x-option" data-method="apple"><img alt="Apple Pay" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"></div>
+    </div>
+    <button class="x-pay">Pay</button>
+    <button class="x-close">Close</button>
+  </div>
+</div>
+<div id="x-success" style="display:none" class="x-overlay">
+  <div class="x-card">
+    <div class="x-success-title">Payment successful</div>
+    <div class="x-success-msg"></div>
+    <button class="x-s-close">Close</button>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  function q(s,ctx){ return (ctx||document).querySelector(s); }
+  function qa(s,ctx){ return (ctx||document).querySelectorAll(s); }
+  function showX(el){ if(!el) return; el.classList.add('_show'); el.style.display='flex'; }
+  function hideX(el){ if(!el) return; el.classList.remove('_show'); el.style.display='none'; }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const xLoading = q('#x-loading');
+    const xPayment = q('#x-payment');
+    const xSuccess = q('#x-success');
+    const idInp = q('#tiktokId') || q('input[name="tiktokId"]') || q('input[placeholder*="TikTok"]');
+
+    // 3.1 Normalize outer Pay buttons: add a data-role so we can catch them reliably
+    qa('button, a, div[role="button"]').forEach(function(btn){
+      if (btn.closest('#x-payment,#x-success')) return; // skip inside overlays
+      const text = (btn.textContent||'').trim().toLowerCase();
+      if (btn.matches('.pay-btn, .btn-pay, #payButton, [data-action="outer-pay"]') || text === 'pay' || text === 'pay now' || text === 'thanh toán'){
+        btn.setAttribute('data-role','x-outer-pay');
+      }
+    });
+
+    // 3.2 Outer Pay handler (capture + stopImmediate)
+    function onOuterPay(e){
+      const btn = e.target.closest('[data-role="x-outer-pay"]');
+      if(!btn) return;
+      if (btn.closest('#x-payment')) return; // ignore inside
+      e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+
+      const val = idInp && idInp.value ? idInp.value.trim() : '';
+      if (!val){
+        if(idInp){
+          idInp.style.outline='2px solid #FE2C55'; idInp.style.boxShadow='0 0 0 2px rgba(254,44,85,.15)';
+          idInp.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
+        }
+        const t=document.createElement('div');
+        t.textContent='Please enter your TikTok ID before paying';
+        Object.assign(t.style,{position:'fixed',left:'50%',bottom:'12%',transform:'translateX(-50%)',background:'#FE2C55',color:'#fff',padding:'8px 12px',borderRadius:'6px',fontSize:'14px',zIndex:'1000000',boxShadow:'0 6px 20px rgba(0,0,0,.15)'});
+        document.body.appendChild(t); setTimeout(()=>t.remove(),1400);
+        return;
+      }
+
+      showX(xLoading);
+      setTimeout(function(){ hideX(xLoading); showX(xPayment); }, 1000);
+    }
+    document.addEventListener('click', onOuterPay, true);
+
+    // 3.3 Select method in xPayment
+    let method = null;
+    qa('.x-option', xPayment).forEach(function(opt){
+      opt.addEventListener('click', function(){
+        qa('.x-option', xPayment).forEach(o=>o.classList.remove('selected'));
+        this.classList.add('selected');
+        method = this.getAttribute('data-method') || 'other';
+      });
+    });
+
+    // 3.4 Inner Pay in xPayment
+    (q('.x-pay', xPayment)||{}).onclick = function(e){
+      e.preventDefault();
+      if(!method){
+        const t=document.createElement('div');
+        t.textContent='Please select a payment method';
+        Object.assign(t.style,{position:'fixed',left:'50%',bottom:'12%',transform:'translateX(-50%)',background:'#FE2C55',color:'#fff',padding:'8px 12px',borderRadius:'6px',fontSize:'14px',zIndex:'1000000',boxShadow:'0 6px 20px rgba(0,0,0,.15)'});
+        document.body.appendChild(t); setTimeout(()=>t.remove(),1400);
+        return;
+      }
+      hideX(xPayment); showX(xLoading);
+      setTimeout(function(){
+        hideX(xLoading);
+        const msg = q('.x-success-msg', xSuccess);
+        const coins = (q('#selectedCoins') && q('#selectedCoins').value) ? q('#selectedCoins').value : '';
+        const id = idInp && idInp.value ? idInp.value.trim() : '';
+        if(msg) msg.textContent = `TikTok ID: ${id || '(not provided)'}
+Coins: ${coins || '(not selected)'}
+Method: ${method.toUpperCase()}`;
+        showX(xSuccess);
+        // auto close after 5s
+        setTimeout(function(){ hideX(xSuccess); }, 5000);
+      }, 5000);
+    };
+
+    // 3.5 Close buttons
+    (q('.x-close', xPayment)||{}).onclick = function(e){ e.preventDefault(); hideX(xPayment); };
+    (q('.x-s-close', xSuccess)||{}).onclick = function(e){ e.preventDefault(); hideX(xSuccess); };
+  });
+})();
 </script>
 
 </body>
