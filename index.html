@@ -879,6 +879,36 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 .x-success-msg{ font-size:14px; color:#333; white-space:pre-line; }
 </style>
 
+
+<style>
+/* Make payment options a neat grid (2 columns) so the new "Other" sits above the Pay button */
+.x-options {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 8px !important;
+}
+@media (max-width:420px){
+  .x-options { grid-template-columns: repeat(2, 1fr) !important; }
+}
+</style>
+
+
+<style>
+.x-check {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: #4CAF50;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+.x-check::after {
+  content: '✔';
+  color: #fff;
+  font-size: 32px;
+  font-weight: bold;
+}
+</style>
+
 </head>
 <body>
 <input type="hidden" id="selectedCoins" value="" />
@@ -972,895 +1002,6 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 </div>
 </div>
 </div>
-<script>
-    // ===== Helpers: ALL COMMAS =====
-    const RATE = 0.014142857142857143; // 70 coins = 0,99 USD
-    function fmtNum(n){ return (Number(n)||0).toLocaleString('en-US').replace(/\./g,','); }
-    function fmtUSD(n){ return 'US$' + (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}).replace(/\./g,','); }
-
-    // Render package labels & prices using RATE
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.package').forEach(pkg => {
-        const coins = parseInt(pkg.dataset.coins, 10) || 0;
-        pkg.querySelector('.coin span').textContent = fmtNum(coins);
-        const price = coins * RATE;
-        pkg.querySelector('.price').textContent = fmtUSD(price);
-      });
-    });
-
-    // ===== Package select =====
-    const packages = document.querySelectorAll('.package');
-    const pmTotal = document.getElementById('pmTotal');
-    const lastPurchase = document.getElementById('lastPurchase');
-    const coinAmountBtn = document.getElementById('coinAmountBtn');
-    let selectedAmount = 0;
-    let selectedCoins = 0;
-
-    packages.forEach(pkg=>{
-      pkg.addEventListener('click',()=>{
-        packages.forEach(p=>p.classList.remove('selected'));
-        pkg.classList.add('selected');
-        selectedCoins = parseInt(pkg.dataset.coins)||0;
-        selectedAmount = selectedCoins * RATE;
-        // sync custom field
-        coinAmountBtn.value = selectedCoins ? (fmtNum(selectedCoins) + ' coins') : '';
-        // update total
-        pmTotal.textContent = 'Total: ' + fmtUSD(selectedAmount);
-      });
-    });
-
-    // ===== Payment Modal =====
-    const pmModal = document.getElementById('pmModal');
-    const pmItems = document.querySelectorAll('.pm-item');
-    const pmCardBox = document.getElementById('pmCardBox');
-
-    function openPM(){
-      pmModal.style.display='block';
-      // default select Visa
-      pmItems.forEach(i=>i.classList.remove('active'));
-      const visa = document.querySelector('.pm-item[data-method="visa"]');
-      if(visa){ visa.classList.add('active'); pmCardBox.style.display='block'; }
-    }
-    function closePM(){
-      pmModal.style.display='none';
-      pmCardBox.style.display='none';
-      pmItems.forEach(i=>i.classList.remove('active'));
-    }
-    pmItems.forEach(item=>{
-      item.addEventListener('click', ()=>{
-        pmItems.forEach(i=>i.classList.remove('active'));
-        item.classList.add('active');
-        pmCardBox.style.display = item.dataset.method==='visa' ? 'block' : 'none';
-      });
-    });
-
-    // ===== Loading -> Success flow (1.5s) =====
-    const loadingModal = document.getElementById('loadingModal');
-    const finalModal = document.getElementById('finalModal');
-    function doPay(){
-      pmModal.style.display='none';
-      loadingModal.style.display='flex';
-      setTimeout(()=>{
-        loadingModal.style.display='none';
-        document.getElementById('finalDetails').innerHTML =
-          'You bought <b>' + fmtNum(selectedCoins) + '</b> coins for <b>' + fmtUSD(selectedAmount) + '</b>.';
-        lastPurchase.style.display='block';
-        lastPurchase.textContent = 'Last purchase: ' + fmtNum(selectedCoins) + ' coins – ' + fmtUSD(selectedAmount);
-        finalModal.style.display='flex';
-      },1500);
-    }
-    function closeFinal(){ finalModal.style.display='none'; }
-
-    // ===== Quantity keypad sheet (MIN=0, MAX=10,000,000) =====
-    const COIN_MIN = 0, COIN_MAX = 10000000;
-    const qtySheet = document.getElementById('qtySheet');
-    const qtyDisplay = document.getElementById('qtyDisplay');
-    const qtyTotal = document.getElementById('qtyTotal');
-    const qtyPad = document.getElementById('qtyPad');
-
-    function openQtySheet(){
-      qtySheet.style.display = 'block';
-      requestAnimationFrame(()=> qtySheet.classList.add('show'));
-      const cur = Math.min(Math.max(selectedCoins, COIN_MIN), COIN_MAX);
-      qtyDisplay.textContent = fmtNum(cur);
-      qtyTotal.textContent = fmtUSD(cur * RATE);
-    }
-    function closeQtySheet(){
-      qtySheet.classList.remove('show');
-      setTimeout(()=>{ qtySheet.style.display='none'; }, 250);
-    }
-
-    qtyPad.addEventListener('click', (e)=>{
-      const key = e.target.closest('.qty-key');
-      if(!key) return;
-      let raw = qtyDisplay.textContent.replace(/,/g,'');
-      let val = parseInt(raw||'0',10);
-      const txt = key.textContent.trim();
-      const act = key.dataset.act;
-
-      if(act === 'back'){ val = Math.floor(val/10); }
-      else if(txt === '000'){ val = Number(String(val||'0') + '000'); }
-      else { val = Number(String(val||'') + txt); }
-
-      if(val>COIN_MAX) val = COIN_MAX;
-      if(val<COIN_MIN) val = COIN_MIN;
-
-      qtyDisplay.textContent = fmtNum(val);
-      qtyTotal.textContent = fmtUSD(val * RATE);
-    });
-
-    function applyQty(){
-      const raw = qtyDisplay.textContent.replace(/,/g,'');
-      let val = parseInt(raw,10) || 0;
-      if(val>COIN_MAX) val = COIN_MAX;
-      if(val<COIN_MIN) val = COIN_MIN;
-      selectedCoins = val;
-      selectedAmount = val * RATE;
-      coinAmountBtn.value = val ? (fmtNum(val) + ' coins') : '';
-      pmTotal.textContent = 'Total: ' + fmtUSD(selectedAmount);
-      // clear package selection (custom mode)
-      packages.forEach(p=>p.classList.remove('selected'));
-      closeQtySheet();
-      // open payment modal immediately
-      openPM();
-    }
-  </script>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  try{
-    document.querySelectorAll('.package').forEach(function(pkg){
-      var hasPrice = pkg.querySelector('.price');
-      var dataUsd = pkg.getAttribute('data-price') || pkg.getAttribute('data-usd') || pkg.dataset && (pkg.dataset.price || pkg.dataset.usd);
-      if(!hasPrice && dataUsd){
-        var span = document.createElement('div');
-        span.className = 'price';
-        span.textContent = dataUsd;
-        pkg.appendChild(span);
-      }
-    });
-  }catch(e){}
-});
-</script>
-<script>
-// --- SAFETY: prevent payment/keypad modals from auto-opening on first load ---
-document.addEventListener('DOMContentLoaded', function () {
-  const selectors = [
-    '.pm-modal', '.loading-modal', '.final-modal', '.qty-sheet',
-    '.pm-card', '.pm-wrap'
-  ];
-  selectors.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
-      try {
-        el.style.display = 'none';
-        el.classList.remove('show', 'active', 'open', 'visible');
-        // Also hide any parent sheet/wrap if nested
-        if (el.parentElement && (el.parentElement.classList.contains('pm-modal') ||
-                                 el.parentElement.classList.contains('qty-sheet'))) {
-          el.parentElement.style.display = 'none';
-          el.parentElement.classList.remove('show', 'active', 'open', 'visible');
-        }
-      } catch(e){}
-    });
-  });
-
-  // Neutralize any inline onload handlers that might open modals
-  // If some function like openPayment/openQty was bound to onload, we overwrite them as no-ops until user action.
-  const noops = ['openPayment', 'openQty', 'showPayment', 'showQty', 'openPaymentModal', 'showOrder'];
-  noops.forEach(fn => { try { window[fn] = function(){ /* no auto-run on load */ }; } catch(e){} });
-
-  // Ensure Pay button only opens when clicked
-  document.querySelectorAll('[data-action="open-payment"]').forEach(btn => {
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const modal = document.querySelector('.pm-modal');
-      if (modal){ modal.style.display = 'block'; }
-    });
-  });
-
-  // Close buttons
-  document.querySelectorAll('[data-action="close-payment"]').forEach(btn => {
-    btn.addEventListener('click', function(){
-      const modal = document.querySelector('.pm-modal');
-      if (modal){ modal.style.display = 'none'; }
-    });
-  });
-});
-</script>
-<script>
-(function(){
-  // Remove any "open" classes on first paint
-  document.addEventListener('DOMContentLoaded', function(){
-    const MODAL_SELECTORS = ['.pm-modal', '.final-modal', '.loading-modal', '.qty-sheet', '.pm-card', '.pm-wrap'];
-    MODAL_SELECTORS.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => {
-        try {
-          el.style.display = 'none';
-          el.classList.remove('show','active','open','visible','_forceShow');
-        } catch(e){}
-      });
-    });
-
-    // Neutralize known modal openers if defined
-    const NOOPS = ['openPayment', 'openQty', 'showPayment', 'showQty', 'openPaymentModal', 'showOrder', 'showSuccess', 'openSuccess'];
-    NOOPS.forEach(fn => { try { window[fn] = function(){ /* blocked on load */ }; } catch(e){} });
-
-    // Intercept auto setTimeout until user interacts (prevents delayed auto-open)
-    const origTimeout = window.setTimeout;
-    let unlocked = false;
-    let queue = [];
-    window.setTimeout = function(fn, t){
-      if (unlocked) return origTimeout(fn, t);
-      queue.push(function(){ try{ fn(); }catch(e){} });
-      return 0;
-    };
-    function unlock(){
-      if (unlocked) return;
-      unlocked = true;
-      window.setTimeout = origTimeout;
-      queue.forEach(fn => fn());
-      queue = [];
-    }
-    ['click','touchstart','keydown'].forEach(evt => {
-      window.addEventListener(evt, unlock, { once: true, passive: true });
-    });
-
-    // Hook explicit open buttons only
-    document.querySelectorAll('[data-action="open-payment"]').forEach(btn => {
-      btn.addEventListener('click', function(e){
-        e.preventDefault();
-        const modal = document.querySelector('.pm-modal');
-        if (modal){ modal.classList.add('_forceShow'); }
-      });
-    });
-    document.querySelectorAll('[data-action="close-payment"]').forEach(btn => {
-      btn.addEventListener('click', function(e){
-        e.preventDefault();
-        const modal = document.querySelector('.pm-modal');
-        if (modal){ modal.classList.remove('_forceShow'); modal.style.display='none'; }
-      });
-    });
-
-    // Success modal explicit open/close API (opt-in)
-    window.__openSuccessManual = function(){
-      const m = document.querySelector('.final-modal');
-      if (m){ m.classList.add('_forceShow'); }
-    };
-    window.__closeSuccessManual = function(){
-      const m = document.querySelector('.final-modal');
-      if (m){ m.classList.remove('_forceShow'); m.style.display='none'; }
-    };
-  }, { once: true });
-})();
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  function show(el){ if(!el) return; el.classList.add('_forceShow'); el.style.display='block'; }
-  function hide(el){ if(!el) return; el.classList.remove('_forceShow'); el.style.display='none'; }
-
-  // Bind to Pay button(s)
-  const payButtons = document.querySelectorAll('.pm-pay, [data-action="pay"]');
-  payButtons.forEach(btn => {
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-
-      const loading = document.querySelector('.loading-modal');
-      const success = document.querySelector('.final-modal');
-      const payment = document.querySelector('.pm-modal');
-
-      // Close payment sheet, then show spinner 5s
-      hide(payment);
-      show(loading);
-
-      setTimeout(function(){
-        // Hide spinner, show success 5s
-        hide(loading);
-        show(success);
-        setTimeout(function(){
-          hide(success);
-        }, 5000); // success auto close after 5s
-      }, 5000);   // spinner shows for 5s
-    });
-  });
-
-  // Also bind success close button if present
-  const successClose = document.querySelector('.final-close');
-  if (successClose){
-    successClose.addEventListener('click', function(){
-      const success = document.querySelector('.final-modal');
-      hide(success);
-    });
-  }
-});
-</script>
-
-<!-- Custom coins popup -->
-<div class="custom-popup" id="customPopup" style="display:none">
-  <div class="popup-box">
-    <div class="popup-title">Custom coins</div>
-    <label for="customInput" class="popup-label">Enter amount coins desired</label>
-    <input type="number" id="customInput" min="1" inputmode="numeric" />
-    <div class="popup-actions">
-      <button id="customCancel" class="btn-cancel">Cancel</button>
-      <button id="customOk" class="btn-ok">OK</button>
-    </div>
-  </div>
-</div>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  function $(sel){ return document.querySelector(sel); }
-  function show(el){ if(el){ el.classList.add('_forceShow'); el.style.display='block'; } }
-  function hide(el){ if(el){ el.classList.remove('_forceShow'); el.style.display='none'; } }
-
-  // === Selectors ===
-  const paymentModal = document.querySelector('.pm-modal');
-  const loadingModal = document.querySelector('.loading-modal');
-  const successModal = document.querySelector('.final-modal');
-  const idInp = document.querySelector('#tiktokId');
-  const selectedCoins = document.querySelector('#selectedCoins');
-  const customTile = document.querySelector('.package.custom-package');
-
-  if(idInp){
-    idInp.addEventListener('input', function(){ this.style.outline=''; this.style.boxShadow=''; });
-  }
-
-  // === Inner Pay (inside modal): loading 5s -> success 5s -> hide ===
-  const innerPays = document.querySelectorAll('.pm-pay, [data-action="pay"]');
-  innerPays.forEach(btn => {
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      hide(paymentModal);
-      show(loadingModal);
-      setTimeout(function(){
-        hide(loadingModal);
-        show(successModal);
-        setTimeout(function(){ hide(successModal); }, 5000);
-      }, 5000);
-    });
-  });
-  document.querySelectorAll('[data-action="close-payment"]').forEach(btn => {
-    btn.addEventListener('click', function(e){ e.preventDefault(); hide(paymentModal); });
-  });
-  const successClose = document.querySelector('.final-close');
-  if (successClose){ successClose.addEventListener('click', function(){ hide(successModal); }); }
-
-  // === Custom tile: open popup to enter desired coins ===
-  const popup = document.getElementById('customPopup');
-  const customInput = document.getElementById('customInput');
-  const btnOk = document.getElementById('customOk');
-  const btnCancel = document.getElementById('customCancel');
-
-  if(customTile){
-    customTile.addEventListener('click', function(){
-      if(popup){
-        popup.style.display='flex';
-        customInput.value = '';
-        customInput.focus();
-      }
-    });
-  }
-  if(btnCancel){
-    btnCancel.addEventListener('click', function(){ if(popup) popup.style.display='none'; });
-  }
-  if(btnOk){
-    btnOk.addEventListener('click', function(){
-      const v = (customInput && customInput.value) ? parseInt(customInput.value,10) : 0;
-      if(v > 0 && customTile){
-        // Update UI
-        const priceDiv = customTile.querySelector('.price');
-        if(priceDiv){ priceDiv.textContent = v.toLocaleString('en-US') + ' coins'; }
-        customTile.classList.add('selected');
-        // Store for later
-        if(selectedCoins){ selectedCoins.value = String(v); }
-        // Close popup
-        if(popup) popup.style.display='none';
-      } else {
-        customInput.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
-      }
-    });
-  }
-
-  // === Selecting fixed coin tiles should set selectedCoins too ===
-  document.querySelectorAll('.package-list .package').forEach(tile => {
-    tile.addEventListener('click', function(){
-      // Skip custom tile (handled above)
-      if(this.classList.contains('custom-package')) return;
-      // Set selected state
-      document.querySelectorAll('.package-list .package').forEach(t => t.classList.remove('selected'));
-      this.classList.add('selected');
-      // Read data-coins attribute if present
-      const c = this.getAttribute('data-coins');
-      if(selectedCoins){
-        selectedCoins.value = c ? c.replace(/[^0-9]/g,'') : '';
-      }
-    });
-  });
-});
-</script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  function $(sel){ return document.querySelector(sel); }
-  function show(el){ if(el){ el.classList.add('_forceShow'); el.style.display='block'; } }
-  function hide(el){ if(el){ el.classList.remove('_forceShow'); el.style.display='none'; } }
-
-  const paymentModal = document.querySelector('.pm-modal');
-  const loadingModal = document.querySelector('.loading-modal');
-  const successModal = document.querySelector('.final-modal');
-  const idInp = document.querySelector('#tiktokId');
-
-  // OUTER PAY -> validate ID -> show 1.5s spinner -> then OPEN PAYMENT MODAL
-  const outerPays = document.querySelectorAll('button.pay-btn, button.btn-pay, button#payButton, button[data-action="outer-pay"]');
-  outerPays.forEach(btn => {
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const val = (idInp && idInp.value) ? idInp.value.trim() : '';
-      if(!val){
-        if(idInp){
-          idInp.style.outline = '2px solid #FE2C55';
-          idInp.style.boxShadow = '0 0 0 2px rgba(254,44,85,.15)';
-          idInp.style.borderRadius = '8px';
-          idInp.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
-        }
-        let t = document.createElement('div');
-        t.textContent = 'Please enter your TikTok ID before paying';
-        t.style.position='fixed'; t.style.left='50%'; t.style.bottom='12%';
-        t.style.transform='translateX(-50%)'; t.style.background='#FE2C55';
-        t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='8px';
-        t.style.fontSize='14px'; t.style.zIndex='9999'; t.style.boxShadow='0 6px 20px rgba(0,0,0,.15)';
-        document.body.appendChild(t);
-        setTimeout(()=>{ t.remove(); }, 1000);
-        return;
-      }
-      // show outer spinner for 1.5s, then open payment modal
-      if(loadingModal){ loadingModal.classList.add('_forceShow'); loadingModal.style.display = 'block'; }
-      setTimeout(function(){
-        if(loadingModal){ loadingModal.classList.remove('_forceShow'); loadingModal.style.display = 'none'; }
-        if(paymentModal){ paymentModal.classList.add('_forceShow'); paymentModal.style.display = 'block'; }
-      }, 1000);
-    });
-  });
-
-  // INNER PAY (INSIDE MODAL) -> loading 5s -> success 5s
-  const innerPays = document.querySelectorAll('.pm-pay, [data-action="pay"]');
-  innerPays.forEach(btn => {
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      hide(paymentModal);
-      show(loadingModal);
-      setTimeout(function(){
-        hide(loadingModal);
-        show(successModal);
-        setTimeout(function(){ hide(successModal); }, 5000);
-      }, 5000);
-    });
-  });
-
-  // Close payment modal
-  document.querySelectorAll('[data-action="close-payment"]').forEach(btn => {
-    btn.addEventListener('click', function(e){ e.preventDefault(); hide(paymentModal); });
-  });
-  const successClose = document.querySelector('.final-close');
-  if (successClose){ successClose.addEventListener('click', function(){ hide(successModal); }); }
-
-  // CUSTOM tile popup (English labels)
-  const customTile = document.querySelector('.package.custom-package');
-  const popup = document.getElementById('customPopup');
-  const customInput = document.getElementById('customInput');
-  const btnOk = document.getElementById('customOk');
-  const btnCancel = document.getElementById('customCancel');
-  if(customTile){
-    customTile.addEventListener('click', function(){
-      if(popup){
-        popup.style.display='flex';
-        if(customInput){ customInput.value=''; customInput.focus(); }
-      }
-    });
-  }
-  if(btnCancel){ btnCancel.addEventListener('click', function(){ if(popup) popup.style.display='none'; }); }
-  if(btnOk){
-    btnOk.addEventListener('click', function(){
-      if(!customInput) return;
-      const v = parseInt(customInput.value,10);
-      if(v>0){
-        const priceDiv = customTile && customTile.querySelector('.price');
-        if(priceDiv){ priceDiv.textContent = v.toLocaleString('en-US') + ' coins'; }
-        customTile && customTile.classList.add('selected');
-        const selected = document.querySelector('#selectedCoins');
-        if(selected){ selected.value = String(v); }
-        popup.style.display='none';
-      }else{
-        customInput.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
-      }
-    });
-  }
-});
-</script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  // === Pricing config ===
-  // Base per-coin USD rate (adjust to match official TikTok pricing)
-  // Example placeholder: $0.0105 per coin (you can change this)
-  const USD_PER_COIN = 0.0105;
-
-  function coinsToUSD(n){
-    const usd = n * USD_PER_COIN;
-    return usd.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-  }
-
-  // Initialize prices for all fixed packages based on their data-coins attribute
-  document.querySelectorAll('.package-list .package').forEach(tile => {
-    const priceDiv = tile.querySelector('.price');
-    if(!priceDiv) return;
-    const cAttr = tile.getAttribute('data-coins');
-    if(tile.classList.contains('custom-package')){
-      // leave "Enter amount" for custom initially
-      return;
-    }
-    if(cAttr){
-      const n = parseInt(String(cAttr).replace(/[^0-9]/g,''), 10);
-      if(!isNaN(n)){
-        priceDiv.textContent = coinsToUSD(n);
-      }
-    }
-  });
-
-  // When selecting a fixed package, recompute and show USD under it
-  document.querySelectorAll('.package-list .package').forEach(tile => {
-    tile.addEventListener('click', function(){
-      // Skip - custom handles separately
-      if(this.classList.contains('custom-package')) return;
-      const priceDiv = this.querySelector('.price');
-      const cAttr = this.getAttribute('data-coins');
-      const n = cAttr ? parseInt(String(cAttr).replace(/[^0-9]/g,''), 10) : NaN;
-      if(priceDiv && !isNaN(n)){
-        priceDiv.textContent = coinsToUSD(n);
-      }
-    });
-  });
-
-  // Hook into our existing Custom popup (if present) for live USD preview
-  const customTile = document.querySelector('.package.custom-package');
-  const customInput = document.getElementById('customInput');
-  const customOk = document.getElementById('customOk');
-  if(customTile && customInput){
-    const priceDiv = customTile.querySelector('.price');
-    // Live update while typing
-    customInput.addEventListener('input', function(){
-      const v = parseInt(this.value, 10);
-      if(!isNaN(v) && v > 0){
-        if(priceDiv){ priceDiv.textContent = coinsToUSD(v); }
-      }else{
-        if(priceDiv){ priceDiv.textContent = 'Enter amount'; }
-      }
-    });
-    // On OK, confirm and keep the computed USD
-    if(customOk){
-      customOk.addEventListener('click', function(){
-        const v = parseInt(customInput.value, 10);
-        if(!isNaN(v) && v > 0 && priceDiv){
-          priceDiv.textContent = coinsToUSD(v);
-        }
-      });
-    }
-  }
-});
-</script>
-
-
-<script>
-(function(){
-  function q(sel, ctx){ return (ctx||document).querySelector(sel); }
-  function qa(sel, ctx){ return (ctx||document).querySelectorAll(sel); }
-  function show(el){
-    if(!el) return;
-    // Remove inline display none if present
-    try { el.style.display = 'block'; } catch(e){}
-    el.classList.add('_forceShow');
-  }
-  function hide(el){
-    if(!el) return;
-    el.classList.remove('_forceShow');
-    try { el.style.display = 'none'; } catch(e){}
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    const paymentModal = q('.pm-modal') || q('[data-modal="payment"]');
-    const loadingModal = q('.loading-modal') || q('[data-modal="loading"]');
-    const successModal = q('.final-modal') || q('[data-modal="success"]');
-    const idInp = q('#tiktokId');
-
-    // Helper: is click inside payment modal?
-    function isInsideModal(target){
-      return !!(target && (target.closest && target.closest('.pm-modal')));
-    }
-
-    // OUTER PAY: capture clicks on likely Pay buttons OUTSIDE the modal
-    function handleOuterPay(e){
-      const btn = e.target.closest('button, a, div[role="button"]');
-      if(!btn) return;
-      // Ignore clicks inside the payment modal
-      if(isInsideModal(btn)) return;
-
-      // Heuristics: targets with common selectors OR innerText containing 'pay'
-      const text = (btn.textContent || '').trim().toLowerCase();
-      const isLikelyPay = btn.matches('button.pay-btn, button.btn-pay, button#payButton, [data-action="outer-pay"]')
-                          || text === 'pay' || text === 'pay now' || text === 'Pay';
-
-      if(!isLikelyPay) return;
-
-      // If we got here, treat as outer Pay
-      e.preventDefault();
-      e.stopPropagation();
-
-      const val = idInp && idInp.value ? idInp.value.trim() : '';
-      if(!val){
-        if(idInp){
-          idInp.style.outline = '2px solid #FE2C55';
-          idInp.style.boxShadow = '0 0 0 2px rgba(254,44,85,.15)';
-          idInp.style.borderRadius = '6px';
-          idInp.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
-        }
-        // toast (English)
-        let t = document.createElement('div');
-        t.textContent = 'Please enter your TikTok ID before paying';
-        t.style.position='fixed'; t.style.left='50%'; t.style.bottom='12%';
-        t.style.transform='translateX(-50%)'; t.style.background='#FE2C55';
-        t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='6px';
-        t.style.fontSize='14px'; t.style.zIndex='9999'; t.style.boxShadow='0 6px 20px rgba(0,0,0,.15)';
-        document.body.appendChild(t);
-        setTimeout(()=>{ t.remove(); }, 1000);
-        return;
-      }
-
-      // Show outer spinner 1.5s then open payment modal
-      if(loadingModal) show(loadingModal);
-      setTimeout(function(){
-        if(loadingModal) hide(loadingModal);
-        if(paymentModal) show(paymentModal);
-      }, 1000);
-    }
-
-    // Attach on capture to preempt other handlers
-    document.addEventListener('click', handleOuterPay, true);
-
-    // INNER PAY: maintain 5s loading -> 5s success flow
-    qa('.pm-pay, [data-action="pay"]').forEach(function(btn){
-      btn.addEventListener('click', function(e){
-        e.preventDefault();
-        hide(paymentModal);
-        if(loadingModal) show(loadingModal);
-        setTimeout(function(){
-          if(loadingModal) hide(loadingModal);
-          if(successModal) show(successModal);
-          setTimeout(function(){ if(successModal) hide(successModal); }, 5000);
-        }, 5000);
-      });
-    });
-
-    // Close actions
-    qa('[data-action="close-payment"]').forEach(function(btn){
-      btn.addEventListener('click', function(e){ e.preventDefault(); hide(paymentModal); });
-    });
-    const successClose = q('.final-close');
-    if (successClose){ successClose.addEventListener('click', function(){ hide(successModal); }); }
-  });
-})();
-</script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  function q(sel, ctx){ return (ctx||document).querySelector(sel); }
-  function qa(sel, ctx){ return (ctx||document).querySelectorAll(sel); }
-  function show(el){ if(!el) return; el.classList.add('_forceShow'); el.style.display = (el.classList.contains('pm-modal')||el.classList.contains('loading-modal')||el.classList.contains('final-modal')) ? 'flex':'block'; }
-  function hide(el){ if(!el) return; el.classList.remove('_forceShow'); el.style.display = 'none'; }
-
-  const paymentModal = q('.pm-modal');
-  const loadingModal = q('.loading-modal');
-  const successModal = q('.final-modal');
-  const finalMsg = q('.final-message');
-  const idInp = q('#tiktokId');
-  const selectedCoins = q('#selectedCoins');
-
-  // Select payment method (look for alt text)
-  let payMethod = null;
-  qa('.pm-options .pay-option, .payment-method .pay-option').forEach(function(opt){
-    opt.addEventListener('click', function(){
-      qa('.pm-options .pay-option, .payment-method .pay-option').forEach(o => o.classList.remove('selected'));
-      this.classList.add('selected');
-      const img = this.querySelector('img');
-      const alt = img ? (img.alt||'').toLowerCase() : '';
-      if (alt.includes('visa') || alt.includes('mastercard')) payMethod = 'visa';
-      else if (alt.includes('paypal')) payMethod = 'paypal';
-      else if (alt.includes('apple')) payMethod = 'apple';
-      else payMethod = 'other';
-    });
-  });
-
-  // Inner Pay button: only proceed if method selected; show spinner 5s then success with details
-  qa('.pm-pay, [data-action="pay"]').forEach(function(btn){
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      if(!payMethod){
-        // require a method selection
-        let t = document.createElement('div');
-        t.textContent = 'Please select a payment method';
-        t.style.position='fixed'; t.style.left='50%'; t.style.bottom='12%';
-        t.style.transform='translateX(-50%)'; t.style.background='#FE2C55';
-        t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='6px';
-        t.style.fontSize='14px'; t.style.zIndex='9999'; t.style.boxShadow='0 6px 20px rgba(0,0,0,.15)';
-        document.body.appendChild(t);
-        setTimeout(()=>{ t.remove(); }, 1400);
-        return;
-      }
-      hide(paymentModal);
-      show(loadingModal);
-      setTimeout(function(){
-        hide(loadingModal);
-        // Compose success message with TikTok ID + coins
-        const id = idInp && idInp.value ? idInp.value.trim() : '';
-        const coins = selectedCoins && selectedCoins.value ? selectedCoins.value : '';
-        if(finalMsg){
-          const pretty = `TikTok ID: ${id || '(not provided)'}
-Coins: ${coins || '(not selected)'}`;
-          finalMsg.textContent = pretty;
-        }
-        show(successModal);
-        // Auto close after 5s
-        setTimeout(function(){ hide(successModal); }, 5000);
-      }, 5000);
-    });
-  });
-});
-</script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  function q(s,ctx){ return (ctx||document).querySelector(s); }
-  function qa(s,ctx){ return (ctx||document).querySelectorAll(s); }
-  function show(el){ if(!el) return; el.classList.add('_forceShow'); el.style.display='flex'; }
-  function hide(el){ if(!el) return; el.classList.remove('_forceShow'); el.style.display='none'; }
-
-  const loadingModal = q('.loading-modal');
-  const paymentModal = q('.pm-modal');
-  const successModal = q('.final-modal');
-  const idInp = q('#tiktokId');
-  const selectedCoins = q('#selectedCoins');
-
-  // Ensure 3 options exist if none (Visa/PayPal/Apple)
-  const opts = q('.pm-options', paymentModal);
-  if(opts && opts.children.length === 0){
-    opts.innerHTML = `
-      <div class="pay-option" data-method="visa"><img alt="Visa / Mastercard" src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div>
-      <div class="pay-option" data-method="paypal"><img alt="PayPal" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"></div>
-      <div class="pay-option" data-method="apple"><img alt="Apple Pay" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"></div>
-    `;
-  }
-
-  // Select method
-  let payMethod = null;
-  qa('.pm-options .pay-option', paymentModal).forEach(opt => {
-    opt.addEventListener('click', function(){
-      qa('.pm-options .pay-option', paymentModal).forEach(o=>o.classList.remove('selected'));
-      this.classList.add('selected');
-      payMethod = this.getAttribute('data-method') || 'other';
-    });
-  });
-
-  // OUTER PAY: capture probable Pay buttons outside modal
-  function isLikelyOuterPay(target){
-    const btn = target.closest && target.closest('button, a, div[role="button"]');
-    if(!btn) return false;
-    if (btn.closest('.pm-modal')) return false; // ignore inside
-    if (btn.matches('.pay-btn, .btn-pay, #payButton, [data-action="outer-pay"]')) return true;
-    const text = (btn.textContent||'').trim().toLowerCase();
-    return text === 'pay' || text === 'pay now' || text === 'thanh toán';
-  }
-
-  document.addEventListener('click', function(e){
-    if(!isLikelyOuterPay(e.target)) return;
-    e.preventDefault(); e.stopPropagation();
-    const val = idInp && idInp.value ? idInp.value.trim() : '';
-    if(!val){
-      if(idInp){
-        idInp.style.outline='2px solid #FE2C55'; idInp.style.boxShadow='0 0 0 2px rgba(254,44,85,.15)';
-        idInp.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
-      }
-      // toast
-      const t=document.createElement('div');
-      t.textContent='Please enter your TikTok ID before paying';
-      Object.assign(t.style,{position:'fixed',left:'50%',bottom:'12%',transform:'translateX(-50%)',background:'#FE2C55',color:'#fff',padding:'8px 12px',borderRadius:'6px',fontSize:'14px',zIndex:'9999',boxShadow:'0 6px 20px rgba(0,0,0,.15)'});
-      document.body.appendChild(t); setTimeout(()=>t.remove(),1400);
-      return;
-    }
-    show(loadingModal);
-    setTimeout(function(){
-      hide(loadingModal);
-      show(paymentModal);
-    }, 1000); // 1s spinner
-  }, true);
-
-  // INNER PAY inside modal (by button inside modal with text Pay or class)
-  function isInnerPayButton(el){
-    if(!el) return false;
-    const btn = el.closest('button, a, div[role="button"]');
-    if(!btn) return false;
-    if(!btn.closest('.pm-modal')) return false;
-    if (btn.matches('.pm-pay, [data-action="pay"]')) return true;
-    return (btn.textContent||'').trim().toLowerCase() === 'pay';
-  }
-
-  document.addEventListener('click', function(e){
-    if(!isInnerPayButton(e.target)) return;
-    e.preventDefault(); e.stopPropagation();
-    if(!payMethod){
-      const t=document.createElement('div');
-      t.textContent='Please select a payment method';
-      Object.assign(t.style,{position:'fixed',left:'50%',bottom:'12%',transform:'translateX(-50%)',background:'#FE2C55',color:'#fff',padding:'8px 12px',borderRadius:'6px',fontSize:'14px',zIndex:'9999',boxShadow:'0 6px 20px rgba(0,0,0,.15)'});
-      document.body.appendChild(t); setTimeout(()=>t.remove(),1400);
-      return;
-    }
-    hide(paymentModal);
-    show(loadingModal);
-    setTimeout(function(){
-      hide(loadingModal);
-      // Build success message
-      const id = idInp && idInp.value ? idInp.value.trim() : '';
-      const coins = selectedCoins && selectedCoins.value ? selectedCoins.value : '';
-      const msg = q('.final-message', successModal);
-      if(msg){
-        msg.textContent = `TikTok ID: ${id || '(not provided)'}
-Coins: ${coins || '(not selected)'}
-Method: ${payMethod.toUpperCase()}`;
-      }
-      show(successModal);
-      setTimeout(function(){ hide(successModal); }, 5000);
-    }, 5000);
-  }, true);
-
-  // Close actions
-  (function(){
-    document.addEventListener('click', function(e){
-      const btn = e.target.closest('[data-action="close-payment"], .final-close');
-      if(!btn) return;
-      e.preventDefault();
-      const modal = btn.closest('.pm-modal, .final-modal');
-      if(modal) modal.classList.remove('_forceShow'), modal.style.display='none';
-    });
-  })();
-});
-</script>
-
-
-<!-- Robust overlays (unique IDs) -->
-<div id="x-loading" style="display:none" class="x-overlay">
-  <div class="x-spinner"></div>
-</div>
-<div id="x-payment" style="display:none" class="x-overlay">
-  <div class="x-sheet">
-    <h3 class="x-title">Payment method</h3>
-    <div class="x-options">
-      <div class="x-option" data-method="visa"><img alt="Visa / Mastercard" src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div>
-      <div class="x-option" data-method="paypal"><img alt="PayPal" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"></div>
-      <div class="x-option" data-method="apple"><img alt="Apple Pay" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"></div>
-    </div>
-    <button class="x-pay">Pay</button>
-    <button class="x-close">Close</button>
-  </div>
-</div>
-<div id="x-success" style="display:none" class="x-overlay">
-  <div class="x-card">
-    <div class="x-success-title">Payment successful</div>
-    <div class="x-success-msg"></div>
-    <button class="x-s-close">Close</button>
-  </div>
-</div>
 
 
 <script>
@@ -1876,41 +1017,7 @@ Method: ${payMethod.toUpperCase()}`;
     const xSuccess = q('#x-success');
     const idInp = q('#tiktokId') || q('input[name="tiktokId"]') || q('input[placeholder*="TikTok"]');
 
-    // 3.1 Normalize outer Pay buttons: add a data-role so we can catch them reliably
-    qa('button, a, div[role="button"]').forEach(function(btn){
-      if (btn.closest('#x-payment,#x-success')) return; // skip inside overlays
-      const text = (btn.textContent||'').trim().toLowerCase();
-      if (btn.matches('.pay-btn, .btn-pay, #payButton, [data-action="outer-pay"]') || text === 'pay' || text === 'pay now' || text === 'thanh toán'){
-        btn.setAttribute('data-role','x-outer-pay');
-      }
-    });
-
-    // 3.2 Outer Pay handler (capture + stopImmediate)
-    function onOuterPay(e){
-      const btn = e.target.closest('[data-role="x-outer-pay"]');
-      if(!btn) return;
-      if (btn.closest('#x-payment')) return; // ignore inside
-      e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation();
-
-      const val = idInp && idInp.value ? idInp.value.trim() : '';
-      if (!val){
-        if(idInp){
-          idInp.style.outline='2px solid #FE2C55'; idInp.style.boxShadow='0 0 0 2px rgba(254,44,85,.15)';
-          idInp.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
-        }
-        const t=document.createElement('div');
-        t.textContent='Please enter your TikTok ID before paying';
-        Object.assign(t.style,{position:'fixed',left:'50%',bottom:'12%',transform:'translateX(-50%)',background:'#FE2C55',color:'#fff',padding:'8px 12px',borderRadius:'6px',fontSize:'14px',zIndex:'1000000',boxShadow:'0 6px 20px rgba(0,0,0,.15)'});
-        document.body.appendChild(t); setTimeout(()=>t.remove(),1400);
-        return;
-      }
-
-      showX(xLoading);
-      setTimeout(function(){ hideX(xLoading); showX(xPayment); }, 1000);
-    }
-    document.addEventListener('click', onOuterPay, true);
-
-    // 3.3 Select method in xPayment
+    // Payment option selection
     let method = null;
     qa('.x-option', xPayment).forEach(function(opt){
       opt.addEventListener('click', function(){
@@ -1920,9 +1027,32 @@ Method: ${payMethod.toUpperCase()}`;
       });
     });
 
-    // 3.4 Inner Pay in xPayment
-    (q('.x-pay', xPayment)||{}).onclick = function(e){
-      e.preventDefault();
+    // Outer Pay button normalization
+    qa('button, a, div[role="button"]').forEach(function(btn){
+      if(btn.closest('#x-payment,#x-success')) return;
+      const text=(btn.textContent||'').trim().toLowerCase();
+      if(btn.matches('.pay-btn, .btn-pay, #payButton,[data-action="outer-pay"]')||text==='pay'||text==='pay now'||text==='thanh toán'){
+        btn.setAttribute('data-role','x-outer-pay');
+      }
+    });
+
+    // Outer Pay handler
+    document.addEventListener('click', function(e){
+      const btn=e.target.closest('[data-role="x-outer-pay"]');
+      if(!btn) return;
+      e.preventDefault(); e.stopPropagation();
+      const val=idInp&&idInp.value? idInp.value.trim():'';
+      if(!val){
+        if(idInp){ idInp.style.outline='2px solid #FE2C55'; }
+        return;
+      }
+      showX(xLoading);
+      setTimeout(function(){ hideX(xLoading); showX(xPayment); },1000);
+    }, true);
+
+    // Inner Pay in modal (ALL METHODS supported)
+    (q('.x-pay',xPayment)||{}).onclick=function(ev){
+      ev.preventDefault();
       if(!method){
         const t=document.createElement('div');
         t.textContent='Please select a payment method';
@@ -1933,24 +1063,26 @@ Method: ${payMethod.toUpperCase()}`;
       hideX(xPayment); showX(xLoading);
       setTimeout(function(){
         hideX(xLoading);
-        const msg = q('.x-success-msg', xSuccess);
-        const coins = (q('#selectedCoins') && q('#selectedCoins').value) ? q('#selectedCoins').value : '';
-        const id = idInp && idInp.value ? idInp.value.trim() : '';
-        if(msg) msg.textContent = `TikTok ID: ${id || '(not provided)'}
-Coins: ${coins || '(not selected)'}
-Method: ${method.toUpperCase()}`;
+        const msg=q('.x-success-msg',xSuccess);
+        const coins=(q('#selectedCoins')&&q('#selectedCoins').value)? q('#selectedCoins').value:'';
+        const id=idInp&&idInp.value? idInp.value.trim():'';
+        const prettyMethod = (method||'').toUpperCase();
+        if(msg){
+  const idVal = id || '(not provided)';
+  const coinsVal = coins || '(not selected)';
+  msg.textContent = `TikTok ID: ${idVal}
+Coins: ${coinsVal}`;
+}
         showX(xSuccess);
-        // auto close after 5s
-        setTimeout(function(){ hideX(xSuccess); }, 5000);
-      }, 5000);
+        setTimeout(function(){ hideX(xSuccess); },5000);
+      },5000);
     };
 
-    // 3.5 Close buttons
-    (q('.x-close', xPayment)||{}).onclick = function(e){ e.preventDefault(); hideX(xPayment); };
-    (q('.x-s-close', xSuccess)||{}).onclick = function(e){ e.preventDefault(); hideX(xSuccess); };
+    // Close buttons
+    (q('.x-close',xPayment)||{}).onclick=function(ev){ ev.preventDefault(); hideX(xPayment); };
+    (q('.x-s-close',xSuccess)||{}).onclick=function(ev){ ev.preventDefault(); hideX(xSuccess); };
   });
 })();
 </script>
-
 </body>
 </html>
