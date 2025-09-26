@@ -64,11 +64,7 @@
 
     /* Loading */
     .loading-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200;display:flex;align-items:center;justify-content:center}
-    .spinner{width:48px;height:48px;border:5px solid #f3f3f3;border-top:5px solid #FE2C55;border-radius:50%;animation:spin 0.5s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    /* Success */
-    .final-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1300;display:flex;align-items:center;justify-content:center}
+    .spinner{width:48px;height:48px;border:5px solid #f3f3f3;border-top:5px solid #FE2C55;border-radius:50%;animation:spin 0.5s cubic-bezier(0.4,0.0,0.2,1) infinite;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1300;display:flex;align-items:center;justify-content:center}
     .final-card{background:#fff;border-radius:6px;padding:20px;width:320px;height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.15);text-align:center}
     .final-close{position:absolute;right:10px;top:8px;background:transparent;border:0;font-size:22px;cursor:pointer}
     .check{width:56px;height:56px;border-radius:6px;background:#2ecc71;position:relative;margin-bottom:8px}
@@ -925,7 +921,7 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
   border-radius: 50%;
   border: 6px solid rgba(0,0,0,0.1);
   border-top-color: #FE2C55;
-  animation: spin 0.5s linear infinite;
+  animation: spin 0.5s cubic-bezier(0.4,0.0,0.2,1) infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
@@ -963,7 +959,7 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 .spinner {
   width: 56px; height: 56px; border-radius: 50%;
   border: 6px solid rgba(255,255,255,.35); border-top-color: #fff;
-  animation: spin 0.5s .9s linear infinite;
+  animation: spin 0.5s cubic-bezier(0.4,0.0,0.2,1) infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .pm-card, .final-card { background:#fff; width:100%; max-width:520px; margin:0 12px 12px; border-radius:6px; box-shadow:0 8px 30px rgba(0,0,0,.2); padding:16px; text-align:center; }
@@ -991,7 +987,7 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 .x-spinner{
   width:64px; height:64px; border-radius:50%;
   border:6px solid rgba(255,255,255,.35); border-top-color:#fff;
-  animation: xspin 0.8s .9s linear infinite;
+  animation: xspin 0.8s cubic-bezier(0.4,0.0,0.2,1) infinite;
 }
 @keyframes xspin { to { transform: rotate(360deg); } }
 .x-sheet, .x-card{
@@ -1128,7 +1124,7 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 .x-spinner{
   width:64px; height:64px; border-radius:50%;
   border:6px solid rgba(255,255,255,.35); border-top-color:#fff;
-  animation: xspin 0.8s .9s linear infinite;
+  animation: xspin 0.8s cubic-bezier(0.4,0.0,0.2,1) infinite;
 }
 @keyframes xspin { to { transform: rotate(360deg); } }
 .x-sheet, .x-card{
