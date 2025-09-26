@@ -1934,3 +1934,79 @@ You can use coins to send virtual gifts.`;
   animation: spin 0.8s linear infinite;
 }
 </style>
+
+<style id="spinner-force-run">
+/* ==== FORCE SPINNER TO ROTATE (ignores conflicting rules) ==== */
+@keyframes spin { /* keep consistent name */
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner, .loading-modal .spinner {
+  box-sizing: border-box !important;
+  border-radius: 50% !important;
+  border-width: 4px !important;
+  border-style: solid !important;
+  border-color: rgba(255,255,255,0.25) !important;
+  border-top-color: #fff !important;
+  width: 24px !important;
+  height: 24px !important;
+  animation-name: spin !important;
+  -webkit-animation-name: spin !important;
+  animation-duration: 0.5s !important;    /* 0.5s = 500ms */
+  -webkit-animation-duration: 0.5s !important;
+  animation-timing-function: linear !important;
+  -webkit-animation-timing-function: linear !important;
+  animation-iteration-count: infinite !important;
+  -webkit-animation-iteration-count: infinite !important;
+  animation-play-state: running !important;
+  -webkit-animation-play-state: running !important;
+  animation-delay: 0s !important;
+  -webkit-animation-delay: 0s !important;
+  transition: none !important;             /* avoid transform transitions conflicting */
+  transform-origin: 50% 50% !important;
+  backface-visibility: hidden !important;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.x-spinner, .final-modal .x-spinner {
+  box-sizing: border-box !important;
+  border-radius: 50% !important;
+  border-width: 4px !important;
+  border-style: solid !important;
+  border-color: rgba(255,255,255,0.25) !important;
+  border-top-color: #fff !important;
+  width: 24px !important;
+  height: 24px !important;
+  animation-name: spin !important;
+  -webkit-animation-name: spin !important;
+  animation-duration: 0.8s !important;    /* 0.8s = 800ms */
+  -webkit-animation-duration: 0.8s !important;
+  animation-timing-function: linear !important;
+  -webkit-animation-timing-function: linear !important;
+  animation-iteration-count: infinite !important;
+  -webkit-animation-iteration-count: infinite !important;
+  animation-play-state: running !important;
+  -webkit-animation-play-state: running !important;
+  animation-delay: 0s !important;
+  -webkit-animation-delay: 0s !important;
+  transition: none !important;
+  transform-origin: 50% 50% !important;
+  backface-visibility: hidden !important;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* If some global reduce-motion setting pauses animations, provide an opt-in escape:
+   Add class ".force-animate" on <body> to guarantee animation runs */
+body.force-animate .spinner,
+body.force-animate .x-spinner {
+  animation-play-state: running !important;
+}
+
+/* Ensure no parent sets 'transform: none !important' on spinner */
+.spinner, .x-spinner {
+  transform: translateZ(0) !important;
+}
+</style>
