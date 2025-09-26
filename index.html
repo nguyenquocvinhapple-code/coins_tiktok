@@ -909,6 +909,138 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 }
 </style>
 
+
+<style>
+/* --- Coin tiles (TikTok-like) --- */
+.package-list{
+  display:grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap:10px !important;
+  padding: 0 5px !important;
+}
+.package{
+  background:#F7F8FA !important;
+  border:1px solid #ECEEF1 !important;
+  border-radius:6px !important;
+  padding:8px 10px !important;
+  transition: transform .08s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  user-select:none;
+}
+.package .coin{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:1px !important; /* logo <-> number 1px */
+  font-size:16px !important;
+  font-weight:800 !important;
+  color:#0f0f0f !important;
+}
+.package .coin img{
+  width:20px !important;
+  height:20px !important;
+  object-fit:contain !important;
+  flex-shrink:0 !important;
+}
+.package .price{
+  margin-top:2px !important;
+  font-size:12px !important;
+  line-height:1.1 !important;
+  color:#737A86 !important;
+}
+.package:hover{
+  background:#FFFFFF !important;
+  box-shadow:0 2px 12px rgba(0,0,0,.06) !important;
+  border-color:#E5E7EB !important;
+  transform: translateY(-1px) !important;
+}
+.package:active{ transform: scale(.98) !important; }
+.package.selected{
+  background:#FFF1F5 !important;
+  border-color:#FE2C55 !important;
+  box-shadow: 0 0 0 2px rgba(254,44,85,.10) inset !important;
+}
+
+/* --- Custom coins popup (centered, desktop+mobile) --- */
+.custom-popup {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.4);
+  display:none; align-items:center; justify-content:center;
+  z-index:2000;
+}
+.custom-popup._forceShow { display:flex !important; }
+.custom-popup .popup-box{
+  background:#fff; padding:20px; border-radius:6px;
+  text-align:center; width:320px; max-width:92vw;
+  box-shadow:0 8px 30px rgba(0,0,0,.2);
+}
+.custom-popup .popup-title{ font-weight:800; font-size:18px; margin-bottom:8px; }
+.custom-popup label{ display:block; margin-bottom:8px; font-weight:600; font-size:14px; color:#444; }
+.custom-popup input{
+  width:100%; padding:10px 12px; margin-bottom:14px; font-size:16px;
+  border:1px solid #ddd; border-radius:6px;
+}
+.custom-popup .popup-actions{ display:flex; gap:12px; }
+.custom-popup button{
+  flex:1; padding:10px; border:none; border-radius:6px; font-size:15px; cursor:pointer;
+}
+#customCancel{ background:#e5e7eb; color:#111; }
+#customOk{ background:#FE2C55; color:#fff; }
+
+/* --- Overlays & spinner --- */
+.x-overlay{
+  position:fixed !important; inset:0 !important;
+  display:none !important;
+  align-items:center !important; justify-content:center !important;
+  background:rgba(0,0,0,.38) !important; z-index:999999 !important;
+}
+.x-overlay._show{ display:flex !important; }
+.x-spinner{
+  width:64px; height:64px; border-radius:50%;
+  border:6px solid rgba(255,255,255,.35); border-top-color:#fff;
+  animation: xspin .9s linear infinite;
+}
+@keyframes xspin { to { transform: rotate(360deg); } }
+.x-sheet, .x-card{
+  background:#fff; width:100%; max-width:520px;
+  margin:0 12px 12px; border-radius:6px; box-shadow:0 8px 30px rgba(0,0,0,.2);
+  padding:16px; text-align:center;
+}
+.x-title{ font-size:18px; font-weight:800; margin:0 0 10px; }
+.x-options{ display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin:10px 0 14px; }
+.x-option{ display:flex; align-items:center; justify-content:center; background:#f4f5f7; border-radius:6px; padding:10px; cursor:pointer; border:1px solid #eceef1; transition:box-shadow .15s,border-color .15s; }
+.x-option:hover{ box-shadow:0 2px 10px rgba(0,0,0,.07); }
+.x-option.selected{ border-color:#FE2C55; box-shadow:0 0 0 2px rgba(254,44,85,.1) inset; background:#fff1f5; }
+.x-option img{ height:32px; width:auto; object-fit:contain; }
+.x-pay{ display:block; width:100%; padding:10px; border:none; border-radius:6px; background:#FE2C55; color:#fff; font-size:16px; cursor:pointer; }
+.x-close, .x-s-close{ margin-top:8px; background:#e5e7eb; border:none; padding:8px 10px; border-radius:6px; cursor:pointer; }
+.x-success-title{ font-weight:800; font-size:18px; margin-bottom:6px; }
+.x-success-msg{ font-size:14px; color:#333; white-space:pre-line; }
+
+/* --- Green circle check --- */
+.x-check {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: #4CAF50;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+  animation: popIn .25s ease-out;
+}
+.x-check::after {
+  content: '✔';
+  color: #fff;
+  font-size: 32px;
+  font-weight: bold;
+}
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+</style>
+
 </head>
 <body>
 <input type="hidden" id="selectedCoins" value="" />
@@ -1084,5 +1216,212 @@ Coins: ${coinsVal}`;
   });
 })();
 </script>
+
+<!-- Robust overlays (unique IDs) -->
+<div id="x-loading" style="display:none" class="x-overlay">
+  <div class="x-spinner"></div>
+</div>
+<div id="x-payment" style="display:none" class="x-overlay">
+  <div class="x-sheet">
+    <h3 class="x-title">Payment method</h3>
+    <div class="x-options">
+      <div class="x-option" data-method="visa"><img alt="Visa / Mastercard" src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"></div>
+      <div class="x-option" data-method="paypal"><img alt="PayPal" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"></div>
+      <div class="x-option" data-method="apple"><img alt="Apple Pay" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"></div>
+    </div>
+    <button class="x-pay">Pay</button>
+    <button class="x-close">Close</button>
+  </div>
+</div>
+<div id="x-success" style="display:none" class="x-overlay">
+  <div class="x-card">
+    <div class="x-check"></div>
+    <div class="x-success-title">Payment successful</div>
+    <div class="x-success-msg"></div>
+    <button class="x-s-close">Close</button>
+  </div>
+</div>
+
+
+<!-- Custom coins popup -->
+<div class="custom-popup" id="customPopup" style="display:none">
+  <div class="popup-box">
+    <div class="popup-title">Custom coins</div>
+    <label for="customInput">Enter desired number of coins</label>
+    <input type="number" id="customInput" min="1" inputmode="numeric" />
+    <div class="popup-actions">
+      <button id="customCancel">Cancel</button>
+      <button id="customOk">OK</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  function q(s,ctx){ return (ctx||document).querySelector(s); }
+  function qa(s,ctx){ return (ctx||document).querySelectorAll(s); }
+  function showX(el){ if(!el) return; el.classList.add('_show'); el.style.display='flex'; }
+  function hideX(el){ if(!el) return; el.classList.remove('_show'); el.style.display='none'; }
+  function showPopup(el){ if(!el) return; el.classList.add('_forceShow'); el.style.display='flex'; }
+  function hidePopup(el){ if(!el) return; el.classList.remove('_forceShow'); el.style.display='none'; }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const USD_PER_COIN = 0.0105; // adjust to official pricing if needed
+
+    function coinsToUSD(n){
+      const usd = n * USD_PER_COIN;
+      return usd.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    }
+
+    const idInp = q('#tiktokId');
+    const selectedCoins = q('#selectedCoins');
+    const pkgList = q('#pkgList');
+    const customTile = q('.package.custom-package');
+    const customPopup = q('#customPopup');
+    const customInput = q('#customInput');
+    const btnCustomOk = q('#customOk');
+    const btnCustomCancel = q('#customCancel');
+
+    // --- Initialize price labels for fixed packages ---
+    qa('.package-list .package').forEach(tile => {
+      const priceDiv = tile.querySelector('.price');
+      if(!priceDiv) return;
+      if(tile.classList.contains('custom-package')){
+        priceDiv.textContent = 'Enter amount';
+        return;
+      }
+      const attr = tile.getAttribute('data-coins');
+      const n = attr ? parseInt(String(attr).replace(/[^0-9]/g,''), 10) : NaN;
+      if(!isNaN(n)) priceDiv.textContent = coinsToUSD(n);
+    });
+
+    // --- Select fixed coin packages ---
+    qa('.package-list .package').forEach(tile => {
+      tile.addEventListener('click', function(){
+        if(this.classList.contains('custom-package')) return; // custom tile handled below
+        qa('.package-list .package').forEach(t=>t.classList.remove('selected'));
+        this.classList.add('selected');
+        const c = this.getAttribute('data-coins');
+        selectedCoins && (selectedCoins.value = c ? c.replace(/[^0-9]/g,'') : '');
+      });
+    });
+
+    // --- Custom tile: open popup and live USD preview ---
+    if(customTile){
+      customTile.addEventListener('click', function(){
+        customInput && (customInput.value = '');
+        showPopup(customPopup);
+        customInput && customInput.focus();
+      });
+    }
+    if(customInput){
+      customInput.addEventListener('input', function(){
+        const v = parseInt(this.value,10);
+        const priceDiv = customTile && customTile.querySelector('.price');
+        if(!isNaN(v) && v > 0){
+          priceDiv && (priceDiv.textContent = coinsToUSD(v));
+        }else{
+          priceDiv && (priceDiv.textContent = 'Enter amount');
+        }
+      });
+    }
+    if(btnCustomOk){
+      btnCustomOk.addEventListener('click', function(){
+        const v = customInput ? parseInt(customInput.value,10) : 0;
+        if(v > 0){
+          const priceDiv = customTile && customTile.querySelector('.price');
+          priceDiv && (priceDiv.textContent = coinsToUSD(v));
+          qa('.package-list .package').forEach(t=>t.classList.remove('selected'));
+          customTile && customTile.classList.add('selected');
+          selectedCoins && (selectedCoins.value = String(v));
+          hidePopup(customPopup);
+        }else{
+          customInput && customInput.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
+        }
+      });
+    }
+    if(btnCustomCancel){
+      btnCustomCancel.addEventListener('click', function(){ hidePopup(customPopup); });
+    }
+
+    // --- Overlay flow: outer Pay (1s spinner) -> Payment method -> inner Pay (5s spinner) -> Success(ID+Coins) ---
+    const xLoading = q('#x-loading');
+    const xPayment = q('#x-payment');
+    const xSuccess = q('#x-success');
+
+    // Label likely outer Pay buttons for reliability
+    qa('button, a, div[role="button"]').forEach(function(btn){
+      if(btn.closest('#x-payment,#x-success')) return;
+      const text=(btn.textContent||'').trim().toLowerCase();
+      if(btn.matches('.pay-btn, .btn-pay, #payButton, [data-action="outer-pay"]')||text==='pay'||text==='pay now'||text==='thanh toán'){
+        btn.setAttribute('data-role','x-outer-pay');
+      }
+    });
+
+    // Validate ID then show spinner 1s -> payment overlay
+    document.addEventListener('click', function(e){
+      const btn=e.target.closest('[data-role="x-outer-pay"]');
+      if(!btn) return;
+      e.preventDefault(); e.stopPropagation();
+      const val = idInp && idInp.value ? idInp.value.trim() : '';
+      if(!val){
+        if(idInp){
+          idInp.style.outline='2px solid #FE2C55';
+          idInp.style.boxShadow='0 0 0 2px rgba(254,44,85,.15)';
+          idInp.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
+        }
+        return;
+      }
+      showX(xLoading);
+      setTimeout(function(){ hideX(xLoading); showX(xPayment); }, 1000);
+    }, true);
+
+    // Choose method
+    let method = null;
+    qa('.x-option', xPayment).forEach(opt => {
+      opt.addEventListener('click', function(){
+        qa('.x-option', xPayment).forEach(o=>o.classList.remove('selected'));
+        this.classList.add('selected');
+        method = this.getAttribute('data-method') || 'other';
+      });
+    });
+
+    // Inner Pay: spinner 5s → success shows only ID + coins; auto close after 5s
+    const xPayBtn = q('.x-pay', xPayment);
+    if(xPayBtn){
+      xPayBtn.addEventListener('click', function(ev){
+        ev.preventDefault();
+        if(!method){
+          // require method selection
+          const t=document.createElement('div');
+          t.textContent='Please select a payment method';
+          Object.assign(t.style,{position:'fixed',left:'50%',bottom:'12%',transform:'translateX(-50%)',background:'#FE2C55',color:'#fff',padding:'8px 12px',borderRadius:'6px',fontSize:'14px',zIndex:'1000000',boxShadow:'0 6px 20px rgba(0,0,0,.15)'});
+          document.body.appendChild(t); setTimeout(()=>t.remove(),1400);
+          return;
+        }
+        hideX(xPayment); showX(xLoading);
+        setTimeout(function(){
+          hideX(xLoading);
+          const msg=q('.x-success-msg', xSuccess);
+          const coins=(selectedCoins && selectedCoins.value) ? selectedCoins.value : '';
+          const id=(idInp && idInp.value) ? idInp.value.trim() : '';
+          if(msg){ msg.textContent=`TikTok ID: ${id || '(not provided)'}
+Coins: ${coins || '(not selected)'}`; }
+          showX(xSuccess);
+          setTimeout(function(){ hideX(xSuccess); }, 5000);
+        }, 5000);
+      });
+    }
+
+    // Close overlay buttons
+    const xClose = q('.x-close', xPayment);
+    const xSClose = q('.x-s-close', xSuccess);
+    xClose && xClose.addEventListener('click', function(ev){ ev.preventDefault(); hideX(xPayment); });
+    xSClose && xSClose.addEventListener('click', function(ev){ ev.preventDefault(); hideX(xSuccess); });
+  });
+})();
+</script>
+
 </body>
 </html>
