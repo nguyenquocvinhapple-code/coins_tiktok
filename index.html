@@ -420,6 +420,18 @@ input, select, textarea, button {
   object-fit:contain !important;
 }
 
+
+.check, .x-check {
+  display:flex; align-items:center; justify-content:center;
+  width:64px; height:64px;
+  border-radius:50%; background:#4CAF50;
+  margin:0 auto 12px;
+}
+.check img, .x-check img {
+  width:56px; height:56px;
+  object-fit:contain;
+}
+
 </style>
 <style>
 @media (max-width:420px){
@@ -1065,14 +1077,15 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
   to   { transform: scale(1);   opacity: 1; }
 }
 
-/* Force-hide close buttons on success modal */
-.final-close, .x-s-close, .x-close {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+/* Scoped: hide close ONLY in success modal */
+<style>
+.final-modal .final-close, .final-modal .x-s-close {
+  display:none !important; visibility:hidden !important; opacity:0 !important; pointer-events:none !important;
 }
-
+/* Ensure payment close buttons stay visible */
+.pm-modal .pm-close, .x-overlay .x-close {
+  display:block !important; visibility:visible !important; opacity:1 !important; pointer-events:auto !important;
+}
 </style>
 
 </head>
@@ -1214,7 +1227,7 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
         return;
       }
       showX(xLoading);
-      setTimeout(function(){ hideX(xLoading); showX(xPayment); },1000);
+      P00);
     }, true);
 
     // Inner Pay in modal (ALL METHODS supported)
@@ -1241,7 +1254,7 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 Coins: ${coinsVal}`;
 }
         showX(xSuccess);
-        setTimeout(function(){ hideX(xSuccess); },9000);
+        setTimeout(function(){ hideX(xSuccess); },7000);
       },5000);
     };
 
@@ -1409,7 +1422,7 @@ Coins: ${coinsVal}`;
         return;
       }
       showX(xLoading);
-      setTimeout(function(){ hideX(xLoading); showX(xPayment); }, 1000);
+      P00);
     }, true);
 
     // Choose method
@@ -1449,7 +1462,7 @@ You can use coins to send virtual gifts.`;
 }
 
           showX(xSuccess);
-          setTimeout(function(){ hideX(xSuccess); }, 9000);
+          setTimeout(function(){ hideX(xSuccess); }, 7000);
         }, 5000);
       });
     }
@@ -1509,13 +1522,30 @@ You can use coins to send virtual gifts.`;
       if(isShown){
         // clear previous timers by storing on element
         if(xSuccess._autoTimer) clearTimeout(xSuccess._autoTimer);
-        xSuccess._autoTimer = setTimeout(()=>{ hideX(xSuccess); }, 9000);
+        xSuccess._autoTimer = setTimeout(()=>{ hideX(xSuccess); }, 7000);
       }
     });
     obs.observe(xSuccess, { attributes:true, attributeFilter:['style','class'] });
   }
 })();
 </script>
+
+
+<style>
+/* Ensure Payment modal retains its Close button */
+.pm-modal .pm-close,
+.x-overlay .x-close {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+/* Success modal has no close button */
+.final-modal .final-close,
+.final-modal .x-s-close {
+  display: none !important;
+}
+</style>
 
 </body>
 </html>
