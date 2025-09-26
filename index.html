@@ -72,7 +72,7 @@
     .final-card{background:#fff;border-radius:6px;padding:20px;width:320px;height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.15);text-align:center}
     .final-close{position:absolute;right:10px;top:8px;background:transparent;border:0;font-size:22px;cursor:pointer}
     .check{width:56px;height:56px;border-radius:6px;background:#2ecc71;position:relative;margin-bottom:8px}
-    .check img {}
+    
     .final-title{margin:6px 0 4px 0;font-size:18px;font-weight:800}
     .final-details{margin-top:4px;font-size:15px;color:#333}
     .final-details b{font-weight:800}
@@ -163,7 +163,7 @@
   width:48px !important; height:48px !important; border-radius:50% !important;
   background:#2ecc71 !important; position:relative; margin-bottom:8px;
 }
-.final-modal .check img {}
+.final-modal 
 /* === END === */
 
 /* === BEGIN: Mobile coin tiles fit & smaller corner radius === */
@@ -400,52 +400,90 @@ input, select, textarea, button {
 }
 
 
-.check, .x-check {
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  width:64px !important;
-  height:64px !important;
-  border-radius:50% !important;
-  background:#4CAF50 !important;
-  margin:0 auto 12px !important;
-}
-.check img, .x-check img {
-  width:36px !important;
-  height:36px !important;
-  object-fit:contain !important;
-
-  width:40px !important;
-  height:40px !important;
-  object-fit:contain !important;
-}
-
-
+/* Checker icon sizing (replace CSS checkmark) */
 .check, .x-check {
   display:flex; align-items:center; justify-content:center;
-  width:64px; height:64px;
-  border-radius:50%; background:#4CAF50;
-  margin:0 auto 12px;
+  width:64px; height:64px; border-radius:50%; background:#4CAF50; margin:0 auto 12px;
 }
-.check img, .x-check img {
-  width:56px; height:56px;
-  object-fit:contain;
+.check img, .x-check img { width:56px; height:56px; object-fit:contain; }
+
+
+/* Hide close only on success modal */
+.final-modal .final-close, .final-modal .x-s-close {
+  display:none !important; visibility:hidden !important; opacity:0 !important; pointer-events:none !important;
+}
+/* Ensure payment close is visible */
+.pm-modal .pm-close, .x-overlay .x-close {
+  display:block !important; visibility:visible !important; opacity:1 !important; pointer-events:auto !important;
 }
 
 
-/* Responsive fixes for landscape orientation */
-.pm-wrap, .pm-card {
-  max-width: 480px;
-  margin: 0 auto;
+/* Minimal safe landscape constraints (preserve original JS behavior) */
+@media (orientation: landscape) {
+  .container { max-width: 560px !important; margin: 8px auto !important; }
+  .pm-wrap, .pm-card { max-width: 520px !important; margin-left:auto !important; margin-right:auto !important; }
 }
-.coin-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
+
+
+/* Rounder TikTok ID input field */
+#tiktokId, input[name="tiktokId"], .id-input {
+  border-radius: 16px !important;
 }
-@media screen and (max-height: 500px) and (orientation: landscape) {
-  /* removed scaling to preserve touch accuracy */
+
+
+/* Coins logo closer to Custom input (1px spacing) */
+.custom-input {
+  display: flex;
+  align-items: center;
+  gap: 1px !important;
 }
+.custom-input img {
+  margin-right: 1px !important;
+}
+
+
+/* Exact 1px spacing between Coins logo and Custom input */
+.custom-input {
+  display: flex;
+  align-items: center;
+  gap: 1px !important;
+  margin: 0 !important;
+}
+.custom-input img {
+  margin: 0 !important;
+}
+.custom-input input {
+  margin-left: 1px !important;
+}
+
+
+/* Move web-title (tiktok.com) higher */
+.web-title {
+  font-size: 14px !important;
+  text-align: center !important;
+  margin-top: -8px !important;
+  position: relative !important;
+  top: -6px !important;
+}
+
+
+/* Move web-title (tiktok.com) even higher */
+.web-title {
+  font-size: 14px !important;
+  text-align: center !important;
+  margin-top: -16px !important;
+  position: relative !important;
+  top: -14px !important;
+}
+
+
+/* Move web-title (tiktok.com) closest to the top */
+.web-title {
+  font-size: 14px !important;
+  text-align: center !important;
+  margin-top: -24px !important;
+  position: relative !important;
+  top: -22px !important;
 }
 
 </style>
@@ -964,7 +1002,7 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 12px;
 }
-.x-check img {}
+
 </style>
 
 
@@ -1087,20 +1125,10 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
   margin: 0 auto 12px;
   animation: popIn .25s ease-out;
 }
-.x-check img {}
+
 @keyframes popIn {
   from { transform: scale(0.8); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
-}
-
-/* Scoped: hide close ONLY in success modal */
-<style>
-.final-modal .final-close, .final-modal .x-s-close {
-  display:none !important; visibility:hidden !important; opacity:0 !important; pointer-events:none !important;
-}
-/* Ensure payment close buttons stay visible */
-.pm-modal .pm-close, .x-overlay .x-close {
-  display:block !important; visibility:visible !important; opacity:1 !important; pointer-events:auto !important;
 }
 </style>
 
@@ -1243,7 +1271,7 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
         return;
       }
       showX(xLoading);
-      P00);
+      setTimeout(function(){ hideX(xLoading); showX(xPayment); },2000);
     }, true);
 
     // Inner Pay in modal (ALL METHODS supported)
@@ -1438,7 +1466,7 @@ Coins: ${coinsVal}`;
         return;
       }
       showX(xLoading);
-      P00);
+      setTimeout(function(){ hideX(xLoading); showX(xPayment); }, 2000);
     }, true);
 
     // Choose method
@@ -1524,66 +1552,6 @@ You can use coins to send virtual gifts.`;
   });
 })();
 </script>
-
-
-<script>
-(function(){
-  function showX(el){ if(!el) return; el.classList.add('_forceShow'); el.style.display='flex'; }
-  function hideX(el){ if(!el) return; el.classList.remove('_forceShow'); el.style.display='none'; }
-  const xSuccess = document.querySelector('.final-modal, .x-overlay.success, .final-modal._forceShow');
-  if(xSuccess){
-    // Observe attribute changes to detect when shown and auto-hide after 9s
-    const obs = new MutationObserver(()=>{
-      const isShown = getComputedStyle(xSuccess).display !== 'none' || xSuccess.classList.contains('_forceShow');
-      if(isShown){
-        // clear previous timers by storing on element
-        if(xSuccess._autoTimer) clearTimeout(xSuccess._autoTimer);
-        xSuccess._autoTimer = setTimeout(()=>{ hideX(xSuccess); }, 7000);
-      }
-    });
-    obs.observe(xSuccess, { attributes:true, attributeFilter:['style','class'] });
-  }
-})();
-</script>
-
-
-<style>
-/* Ensure Payment modal retains its Close button */
-.pm-modal .pm-close,
-.x-overlay .x-close {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-}
-/* Success modal has no close button */
-.final-modal .final-close,
-.final-modal .x-s-close {
-  display: none !important;
-}
-
-/* --- Safe landscape tweaks (no scaling) --- */
-@media (orientation: landscape) and (max-height: 500px){
-  .container{ max-width: 600px !important; padding: 12px !important; margin: 8px auto !important; }
-  .package-list{ grid-template-columns: repeat(3, 1fr) !important; gap:8px !important; }
-  .pm-card, .x-card, .pm-wrap{ max-width: 520px !important; margin: 8px auto !important; }
-}
-
-/* Ensure buttons are always clickable */
-button, .btn, .pm-pay, .x-pay, .pm-close {
-  pointer-events: auto !important;
-  touch-action: manipulation !important;
-}
-
-/* Ensure overlays allow clicks on their content only */
-.x-overlay, .pm-modal, .final-modal, .loading-modal {
-  pointer-events: none !important;
-}
-.x-overlay._show *, .pm-modal._forceShow *, .final-modal._forceShow *, .loading-modal._forceShow * {
-  pointer-events: auto !important;
-}
-
-</style>
 
 </body>
 </html>
