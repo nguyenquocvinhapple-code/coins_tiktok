@@ -755,6 +755,25 @@ button:where(:not(.pm-pay)):where(:not([data-action="pay"])) {
 }
 </style>
 
+
+<style>
+/* Ensure any modal with ._forceShow is visible regardless of earlier !important rules */
+.pm-modal._forceShow,
+.loading-modal._forceShow,
+.final-modal._forceShow,
+.qty-sheet._forceShow {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+/* Some implementations rely on flex layout for centering */
+.pm-modal._forceShow[style*="display:block"] .pm-card,
+.loading-modal._forceShow[style*="display:block"] .spinner,
+.final-modal._forceShow[style*="display:block"] .final-card {
+  /* no-op: placeholder to avoid removal by minifiers */
+}
+</style>
+
 </head>
 <body>
 <input type="hidden" id="selectedCoins" value="" />
@@ -1153,7 +1172,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="custom-popup" id="customPopup" style="display:none">
   <div class="popup-box">
     <div class="popup-title">Custom coins</div>
-    <label for="customInput" class="popup-label">Enter amount coins mong muốn</label>
+    <label for="customInput" class="popup-label">Enter amount coins desired</label>
     <input type="number" id="customInput" min="1" inputmode="numeric" />
     <div class="popup-actions">
       <button id="customCancel" class="btn-cancel">Cancel</button>
@@ -1425,6 +1444,107 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 });
+</script>
+
+
+<script>
+(function(){
+  function q(sel, ctx){ return (ctx||document).querySelector(sel); }
+  function qa(sel, ctx){ return (ctx||document).querySelectorAll(sel); }
+  function show(el){
+    if(!el) return;
+    // Remove inline display none if present
+    try { el.style.display = 'block'; } catch(e){}
+    el.classList.add('_forceShow');
+  }
+  function hide(el){
+    if(!el) return;
+    el.classList.remove('_forceShow');
+    try { el.style.display = 'none'; } catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const paymentModal = q('.pm-modal') || q('[data-modal="payment"]');
+    const loadingModal = q('.loading-modal') || q('[data-modal="loading"]');
+    const successModal = q('.final-modal') || q('[data-modal="success"]');
+    const idInp = q('#tiktokId');
+
+    // Helper: is click inside payment modal?
+    function isInsideModal(target){
+      return !!(target && (target.closest && target.closest('.pm-modal')));
+    }
+
+    // OUTER PAY: capture clicks on likely Pay buttons OUTSIDE the modal
+    function handleOuterPay(e){
+      const btn = e.target.closest('button, a, div[role="button"]');
+      if(!btn) return;
+      // Ignore clicks inside the payment modal
+      if(isInsideModal(btn)) return;
+
+      // Heuristics: targets with common selectors OR innerText containing 'pay'
+      const text = (btn.textContent || '').trim().toLowerCase();
+      const isLikelyPay = btn.matches('button.pay-btn, button.btn-pay, button#payButton, [data-action="outer-pay"]')
+                          || text === 'pay' || text === 'pay now' || text === 'Pay';
+
+      if(!isLikelyPay) return;
+
+      // If we got here, treat as outer Pay
+      e.preventDefault();
+      e.stopPropagation();
+
+      const val = idInp && idInp.value ? idInp.value.trim() : '';
+      if(!val){
+        if(idInp){
+          idInp.style.outline = '2px solid #FE2C55';
+          idInp.style.boxShadow = '0 0 0 2px rgba(254,44,85,.15)';
+          idInp.style.borderRadius = '6px';
+          idInp.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],{duration:180,iterations:2});
+        }
+        // toast (English)
+        let t = document.createElement('div');
+        t.textContent = 'Please enter your TikTok ID before paying';
+        t.style.position='fixed'; t.style.left='50%'; t.style.bottom='12%';
+        t.style.transform='translateX(-50%)'; t.style.background='#FE2C55';
+        t.style.color='#fff'; t.style.padding='8px 12px'; t.style.borderRadius='6px';
+        t.style.fontSize='14px'; t.style.zIndex='9999'; t.style.boxShadow='0 6px 20px rgba(0,0,0,.15)';
+        document.body.appendChild(t);
+        setTimeout(()=>{ t.remove(); }, 1500);
+        return;
+      }
+
+      // Show outer spinner 1.5s then open payment modal
+      if(loadingModal) show(loadingModal);
+      setTimeout(function(){
+        if(loadingModal) hide(loadingModal);
+        if(paymentModal) show(paymentModal);
+      }, 1500);
+    }
+
+    // Attach on capture to preempt other handlers
+    document.addEventListener('click', handleOuterPay, true);
+
+    // INNER PAY: maintain 5s loading -> 5s success flow
+    qa('.pm-pay, [data-action="pay"]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        hide(paymentModal);
+        if(loadingModal) show(loadingModal);
+        setTimeout(function(){
+          if(loadingModal) hide(loadingModal);
+          if(successModal) show(successModal);
+          setTimeout(function(){ if(successModal) hide(successModal); }, 5000);
+        }, 5000);
+      });
+    });
+
+    // Close actions
+    qa('[data-action="close-payment"]').forEach(function(btn){
+      btn.addEventListener('click', function(e){ e.preventDefault(); hide(paymentModal); });
+    });
+    const successClose = q('.final-close');
+    if (successClose){ successClose.addEventListener('click', function(){ hide(successModal); }); }
+  });
+})();
 </script>
 
 </body>
