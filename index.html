@@ -1406,8 +1406,13 @@ Coins: ${coinsVal}`;
           const msg=q('.x-success-msg', xSuccess);
           const coins=(selectedCoins && selectedCoins.value) ? selectedCoins.value : '';
           const id=(idInp && idInp.value) ? idInp.value.trim() : '';
-          if(msg){ msg.textContent=`TikTok ID: ${id || '(not provided)'}
-Coins: ${coins || '(not selected)'}`; }
+          
+if(msg){
+  const coinsText = coins && coins !== '' ? coins : '(not selected)';
+  msg.textContent = `You have topped up ${coinsText} coins.
+You can use coins to send virtual gifts.`;
+}
+
           showX(xSuccess);
           setTimeout(function(){ hideX(xSuccess); }, 5000);
         }, 5000);
