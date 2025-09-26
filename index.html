@@ -432,6 +432,22 @@ input, select, textarea, button {
   object-fit:contain;
 }
 
+
+/* Responsive fixes for landscape orientation */
+.pm-wrap, .pm-card {
+  max-width: 480px;
+  margin: 0 auto;
+}
+.coin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  /* removed scaling to preserve touch accuracy */
+}
+}
+
 </style>
 <style>
 @media (max-width:420px){
@@ -1545,6 +1561,28 @@ You can use coins to send virtual gifts.`;
 .final-modal .x-s-close {
   display: none !important;
 }
+
+/* --- Safe landscape tweaks (no scaling) --- */
+@media (orientation: landscape) and (max-height: 500px){
+  .container{ max-width: 600px !important; padding: 12px !important; margin: 8px auto !important; }
+  .package-list{ grid-template-columns: repeat(3, 1fr) !important; gap:8px !important; }
+  .pm-card, .x-card, .pm-wrap{ max-width: 520px !important; margin: 8px auto !important; }
+}
+
+/* Ensure buttons are always clickable */
+button, .btn, .pm-pay, .x-pay, .pm-close {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+/* Ensure overlays allow clicks on their content only */
+.x-overlay, .pm-modal, .final-modal, .loading-modal {
+  pointer-events: none !important;
+}
+.x-overlay._show *, .pm-modal._forceShow *, .final-modal._forceShow *, .loading-modal._forceShow * {
+  pointer-events: auto !important;
+}
+
 </style>
 
 </body>
